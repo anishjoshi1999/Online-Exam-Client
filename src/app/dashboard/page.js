@@ -170,7 +170,7 @@ function Dashboard() {
           <div className="lg:col-span-4 mb-6">
             <div className="flex items-center gap-3">
               <Edit3 className="text-blue-600" size={27} />
-              <h2 className="text-2xl font-bold">
+              <h2 className="text-2xl font-bold text-black">
                 Mock MCQ Exams (Coming Soon)
               </h2>
             </div>
