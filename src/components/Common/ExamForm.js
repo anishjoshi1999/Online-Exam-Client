@@ -28,7 +28,6 @@ const ExamForm = ({
   handleClosePreview,
   submitButtonText = "Create Exam",
 }) => {
-  const [loading, setLoading] = useState(true); // Loader state
   const handleQuestionOptionChange = (questionIndex, optionIndex, value) => {
     const updatedOptions = [...questions[questionIndex].options];
     updatedOptions[optionIndex] = value;
@@ -73,18 +72,6 @@ const ExamForm = ({
       ${targetZone}: ${targetTime}
     `;
   };
-  // disable the timer in 2 seconds
-  setTimeout(() => {
-    setLoading(false);
-  }, 500);
-  if (loading) {
-    // Show loader while loading
-    return (
-      <div className="flex items-center justify-center min-h-screen bg-gray-50">
-        <Loader /> {/* Your Loader component */}
-      </div>
-    );
-  }
 
   return (
     <div className="max-w-4xl mx-auto space-y-6">

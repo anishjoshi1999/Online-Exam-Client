@@ -25,6 +25,7 @@ import ActionCard from "@/components/Dashboard/ActionCard";
 import ActivityItem from "@/components/Dashboard/ActivityItem";
 import Navbar from "@/components/Navbar/Navbar";
 import Loader from "@/components/Common/Loader";
+import withAuth from "@/components/Auth/withAuth";
 
 function Dashboard() {
   const [userName, setUserName] = useState("User");
@@ -310,4 +311,4 @@ function Dashboard() {
   );
 }
 
-export default Dashboard;
+export default withAuth(Dashboard);

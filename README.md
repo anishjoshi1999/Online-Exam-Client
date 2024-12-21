@@ -1,36 +1,33 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# MCQ Exam Management System
 
-## Getting Started
+A comprehensive system for creating, managing, and participating in multiple-choice question (MCQ) exams. This application allows creators to easily set up exams and provides a seamless experience for participants, ensuring their responses are securely saved and easily accessible.
 
-First, run the development server:
+## Features Implemented
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+### MCQ Exam Management
+- Creators can easily create, update, and delete MCQ exams.
+- Local times are saved in UTC on the backend for accurate time management.
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### Exam Sharing
+- After creating an exam paper, creators can copy the exam code and share it with participating students.
 
-You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
+### Exam Participation
+- Students can take the exam within the designated time limit:
+  - **Upcoming:** Displayed if the current time is before the exam start time.
+  - **Active:** Displayed if the current time falls within the exam duration.
+  - **Expired:** Displayed if the current time exceeds the exam duration.
+  - Automatic submission occurs if the exam expires, or if participants choose to cancel the exam. Once submitted, participants cannot resubmit their results.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### Sync Feature
+- In the event of a technical glitch or internet outage, each answer is saved in the database. Participants can continue their exam where they left off on any device, as long as it is within the exam time limit.
 
-## Learn More
+### Results Visibility
+- After submission, participants can view their scores, total time taken, and their complete question sheet with marks.
 
-To learn more about Next.js, take a look at the following resources:
+### Performance Overview
+- Participants can review their past exams, including scores, time taken, and a complete marksheet.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+### Creator Insights
+- Exam creators can view all participants' scores, time taken, answer sheets, and their rankings.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
 
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
