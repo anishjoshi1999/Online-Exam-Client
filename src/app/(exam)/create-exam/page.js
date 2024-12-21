@@ -1,17 +1,16 @@
 "use client";
-import React,{useState,useEffect} from "react";
+import React from "react";
 import withAuth from "@/components/Auth/withAuth";
 import Breadcrumbs from "@/components/Common/Breadcrumbs";
 import Navbar from "@/components/Navbar/Navbar";
 import ExamForm from "@/components/Common/ExamForm";
-import { toast, ToastContainer } from "react-toastify";
+import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useExamDetails } from "@/hooks/useExamDetails";
 import { useQuestions } from "@/hooks/useQuestions";
 import { useSubmitExam } from "@/hooks/useSubmitExam";
 
 const CreateExamPage = () => {
-  const [loading, setLoading] = useState(true); // Loader state
   const breadcrumbItems = [
     { label: "Dashboard", href: "/dashboard" },
     { label: "Create Exam", href: "/create-exam" },
