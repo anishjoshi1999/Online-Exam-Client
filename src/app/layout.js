@@ -1,6 +1,7 @@
 import "./globals.css";
 import { Inter } from "next/font/google";
 const inter = Inter({ subsets: ["latin"] });
+import { GoogleAnalytics } from '@next/third-parties/google'
 import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from '@vercel/speed-insights/next';
 export const metadata = {
@@ -42,6 +43,7 @@ export default function RootLayout({ children }) {
       <body className={`${inter.className} flex flex-col min-h-screen`}>
         <main className="flex-grow">
           {children}
+          <GoogleAnalytics gaId="G-SJKT31XBCL" />
           <Analytics />
           <SpeedInsights />
         </main>
