@@ -9,7 +9,7 @@ export const DetailedStep = ({
   index,
 }) => (
   <article
-    className="relative bg-white rounded-2xl shadow-lg transition-transform hover:scale-[1.02] p-8"
+    className="relative bg-white rounded-2xl shadow-lg transition-transform hover:scale-[1.04] p-8"
     aria-label={ariaLabel}
   >
     <div
