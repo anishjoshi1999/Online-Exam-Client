@@ -1,6 +1,6 @@
 import { Hero } from "@/components/Homepage/Hero";
 import { Features } from "@/components/Homepage/Features";
-import ProcessSteps from "@/components/Homepage/ProcessSteps";
+import ProcessSteps from "@/components/Homepage/Steps/ProcessSteps";
 import TestimonalCards from "@/components/Homepage/TestimonalCards";
 import Navbar from "@/components/Navbar/Navbar";
 import CTA from "@/components/Homepage/CTA";
