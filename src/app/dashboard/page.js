@@ -18,6 +18,7 @@ import {
   Video,
   MessageSquare,
   ClipboardCheck,
+  Upload,
 } from "lucide-react";
 import jwt from "jsonwebtoken";
 import StatsCard from "@/components/Dashboard/StatsCard";
@@ -37,7 +38,6 @@ function Dashboard() {
     if (token) {
       try {
         const decoded = jwt.decode(token);
-        console.log(decoded);
         if (decoded.userRole == "admin") {
           setAdmin("admin");
         }
@@ -117,8 +117,59 @@ function Dashboard() {
             icon={Calendar}
           />
         </div>
-
         {/* Main Actions Grid */}
+
+        {/* Study Materials */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+          <div className="lg:col-span-4 mb-6">
+            <div className="flex items-center gap-3">
+              <Edit3 className="text-green-600" size={27} />
+              <h2 className="text-2xl font-bold text-black">Study Materials</h2>
+            </div>
+          </div>
+          {isAdmin === "admin" && (
+            <>
+              <ActionCard
+                icon={Upload}
+                title="Upload Resources"
+                description="Upload study notes and lectures for all topics"
+                href="/upload-resources"
+              />
+            </>
+          )}
+
+          <ActionCard
+            icon={Upload}
+            title="View Resources"
+            description="Access study notes and lectures for all topics"
+            href="/view-resources"
+          />
+          {/* <ActionCard
+            icon={FileText}
+            title="View Notes"
+            description="Access and download study notes for all topics"
+            href="#"
+          />
+          <ActionCard
+            icon={Video}
+            title="Recorded Lectures"
+            description="Watch and learn from recorded video sessions"
+            href="#"
+          />
+          <ActionCard
+            icon={MessageSquare}
+            title="Discussion Forums"
+            description="Join discussions and collaborate with peers"
+            href="#"
+          />
+          <ActionCard
+            icon={ClipboardCheck}
+            title="Mock Tests"
+            description="Practice and evaluate your knowledge with mock tests"
+            href="#"
+          /> */}
+        </div>
+        {/* Online Test */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
           <div className="lg:col-span-4 flex items-center gap-3">
             <GraduationCap className="text-blue-600" size={32} />
@@ -205,41 +256,6 @@ function Dashboard() {
             disabled="true"
           />
         </div> */}
-        {/* Study Materials */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-          <div className="lg:col-span-4 mb-6">
-            <div className="flex items-center gap-3">
-              <Edit3 className="text-green-600" size={27} />
-              <h2 className="text-2xl font-bold text-black">
-                Study Materials (Coming Soon)
-              </h2>
-            </div>
-          </div>
-          <ActionCard
-            icon={FileText}
-            title="View Notes"
-            description="Access and download study notes for all topics"
-            href="#"
-          />
-          <ActionCard
-            icon={Video}
-            title="Recorded Lectures"
-            description="Watch and learn from recorded video sessions"
-            href="#"
-          />
-          <ActionCard
-            icon={MessageSquare}
-            title="Discussion Forums"
-            description="Join discussions and collaborate with peers"
-            href="#"
-          />
-          <ActionCard
-            icon={ClipboardCheck}
-            title="Mock Tests"
-            description="Practice and evaluate your knowledge with mock tests"
-            href="#"
-          />
-        </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Recent Activity Section */}

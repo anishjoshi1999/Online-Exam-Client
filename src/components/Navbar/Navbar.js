@@ -38,7 +38,6 @@ export default function Navbar() {
             credentials: "include",
           }
         );
-
         if (response.ok) {
           localStorage.removeItem("token");
           setToken(null);
