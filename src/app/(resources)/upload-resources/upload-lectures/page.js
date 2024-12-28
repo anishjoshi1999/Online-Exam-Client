@@ -12,25 +12,18 @@ import renewAccessToken from "@/lib/token/renewAccessToken";
 const BREADCRUMB_ITEMS = [
   { label: "Dashboard", href: "/dashboard" },
   { label: "Upload Resources", href: "/upload-resources" },
-  { label: "Upload Notes", href: "/upload-resources/upload-notes" },
+  { label: "Upload Lectures", href: "/upload-resources/upload-lectures" },
 ];
 
 const INITIAL_FORM_STATE = {
   subjectName: "",
   title: "",
   description: "",
-  category: "notes",
-  googleDriveLink: "",
+  youtubeLink: "",
 };
 
-const CATEGORIES = [
-  { value: "notes", label: "Notes" },
-  { value: "ppt", label: "PPT" },
-  { value: "assignments", label: "Assignments" },
-  { value: "others", label: "Others" },
-];
 
-const UploadNotesPage = () => {
+const UploadLecturesPage = () => {
   const [formData, setFormData] = useState(INITIAL_FORM_STATE);
   const [subjects, setSubjects] = useState([]);
   const [newSubject, setNewSubject] = useState("");
@@ -105,11 +98,11 @@ const UploadNotesPage = () => {
       newErrors.description = "Description must be at least 20 characters long";
     }
 
-    // Google Drive link validation
-    if (!formData.googleDriveLink.trim()) {
-      newErrors.googleDriveLink = "Google Drive link is required";
-    } else if (!isValidUrl(formData.googleDriveLink)) {
-      newErrors.googleDriveLink = "Please enter a valid Google Drive URL";
+    // Youtube link validation
+    if (!formData.youtubeLink.trim()) {
+      newErrors.youtubeLink = "Youtube link is required";
+    } else if (!isValidUrl(formData.youtubeLink)) {
+      newErrors.youtubeLink = "Please enter a valid Youtube Video URL";
     }
 
     setErrors(newErrors);
@@ -120,8 +113,8 @@ const UploadNotesPage = () => {
     try {
       const parsedUrl = new URL(url);
       return (
-        parsedUrl.hostname === "drive.google.com" ||
-        parsedUrl.hostname === "docs.google.com"
+        parsedUrl.hostname === "www.youtube.com" ||
+        parsedUrl.hostname === "youtube.com"
       );
     } catch {
       return false;
@@ -176,7 +169,7 @@ const UploadNotesPage = () => {
     try {
       const token = await renewAccessToken();
       const response = await fetch(
-        `${process.env.NEXT_PUBLIC_BACKEND_URL}/upload-resources/upload-notes`,
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/upload-resources/upload-lectures`,
         {
           method: "POST",
           headers: {
@@ -274,29 +267,35 @@ const UploadNotesPage = () => {
           </div>
 
           <div className="flex items-center gap-3 mt-8 lg:mt-12">
-            <h2 className="text-2xl font-bold text-black">Upload Notes</h2>
+            <h2 className="text-2xl font-bold text-black">Upload Lectures</h2>
           </div>
-
           <div className="bg-blue-50 border-l-4 border-blue-500 text-blue-700 p-4 rounded-md mt-6">
             <h3 className="font-bold text-lg mb-2">
-              How to Share a Google Drive Link
+              How to Upload Your YouTube Video as Unlisted (for Selected
+              Students)
             </h3>
             <ul className="list-disc list-inside text-sm text-blue-800 space-y-1">
-              <li>Open Google Drive and locate the file you want to share.</li>
+              <li>Open YouTube and upload the video you want to share.</li>
               <li>
-                Right-click on the file, select <strong>"Share"</strong>, and
-                then click <strong>"Share"</strong> again.
+                During the upload process, in the "Visibility" section, select{" "}
+                <strong>"Unlisted"</strong> if you don't want the video to be
+                public.
               </li>
               <li>
-                In the "General access" section, select{" "}
-                <strong>"Anyone with the link"</strong>.
+                This will allow only people with the link to view the video,
+                keeping it private from others.
               </li>
               <li>
-                Click <strong>"Copy link"</strong> to copy the shareable link.
+                Once the video is uploaded, click the <strong>"Share"</strong>{" "}
+                button.
               </li>
-              <li>Paste the copied link into the form below.</li>
               <li>
-                Ensure the sharing setting is set to <strong>public</strong>.
+                Click <strong>"Copy link"</strong> to copy the unlisted video
+                link.
+              </li>
+              <li>
+                Paste the copied link into the form below to share it with the
+                selected students.
               </li>
             </ul>
           </div>
@@ -363,8 +362,7 @@ const UploadNotesPage = () => {
 
             {renderFormField("Resource Title", "title")}
             {renderFormField("Description", "description", "textarea")}
-            {renderFormField("Category", "category", "select", CATEGORIES)}
-            {renderFormField("Google Drive Link", "googleDriveLink", "url")}
+            {renderFormField("Youtube Link", "youtubeLink", "url")}
 
             <div className="mt-6">
               <button
@@ -388,4 +386,4 @@ const UploadNotesPage = () => {
   );
 };
 
-export default UploadNotesPage;
+export default UploadLecturesPage;

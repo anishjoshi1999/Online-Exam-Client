@@ -18,7 +18,7 @@ import {
   Video,
   MessageSquare,
   ClipboardCheck,
-  Upload 
+  Upload,
 } from "lucide-react";
 import jwt from "jsonwebtoken";
 import StatsCard from "@/components/Dashboard/StatsCard";
@@ -38,7 +38,6 @@ function Dashboard() {
     if (token) {
       try {
         const decoded = jwt.decode(token);
-        console.log(decoded);
         if (decoded.userRole == "admin") {
           setAdmin("admin");
         }
@@ -119,25 +118,28 @@ function Dashboard() {
           />
         </div>
         {/* Main Actions Grid */}
+
         {/* Study Materials */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
           <div className="lg:col-span-4 mb-6">
             <div className="flex items-center gap-3">
               <Edit3 className="text-green-600" size={27} />
-              <h2 className="text-2xl font-bold text-black">
-                Study Materials
-              </h2>
+              <h2 className="text-2xl font-bold text-black">Study Materials</h2>
             </div>
           </div>
+          {isAdmin === "admin" && (
+            <>
+              <ActionCard
+                icon={Upload}
+                title="Upload Resources"
+                description="Upload study notes and lectures for all topics"
+                href="/upload-resources"
+              />
+            </>
+          )}
 
           <ActionCard
-            icon={Upload }
-            title="Upload Resources"
-            description="Upload study notes and lectures for all topics"
-            href="/upload-resources"
-          />
-            <ActionCard
-            icon={Upload }
+            icon={Upload}
             title="View Resources"
             description="Access study notes and lectures for all topics"
             href="/view-resources"
@@ -167,7 +169,7 @@ function Dashboard() {
             href="#"
           /> */}
         </div>
-
+        {/* Online Test */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
           <div className="lg:col-span-4 flex items-center gap-3">
             <GraduationCap className="text-blue-600" size={32} />
