@@ -25,7 +25,7 @@ function InviteParticipantForm({ examSlug }) {
       let token = await renewAccessToken();
       console.log("Valid Email in submit", validEmails);
       const response = await fetch(
-        `${process.env.NEXT_PUBLIC_BACKEND_URL}/invite-participant/create-and-provide-access`,
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/invite-participant`,
         {
           method: "POST",
           headers: {
