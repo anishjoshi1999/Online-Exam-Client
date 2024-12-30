@@ -35,14 +35,18 @@ function InviteParticipantForm({ examSlug }) {
           body: JSON.stringify({ emails: validEmails, slug: examSlug }),
         }
       );
-
+      const data = await response.json();
       if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
+        // Handle specific error messages from backend response
+        if (data.message) {
+          toast.error(data.message); // Display the error message from backend
+        } else {
+          toast.error("Failed to send invitations. Please try again.");
+        }
+        return;
       }
 
-      const data = await response.json();
       toast.success("Access granted and invitations sent successfully!"); // Show success toast
-      console.log("Response from server:", data);
     } catch (error) {
       console.error("Error sending invites:", error);
       toast.error("Failed to send invitations. Please try again."); // Show error toast

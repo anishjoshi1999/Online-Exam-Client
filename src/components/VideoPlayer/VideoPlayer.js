@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useEffect, useRef, useState } from "react";
+import YouTube from "react-youtube";
 import {
   Play,
   Pause,
@@ -28,57 +29,9 @@ export default function VideoPlayer({ videoId }) {
   const [isMuted, setIsMuted] = useState(false);
   const [volume, setVolume] = useState(1);
   const [currentSpeed, setCurrentSpeed] = useState("1");
-  const [viewMode, setViewMode] = useState("default"); // default, theater, fullscreen
+  const [viewMode, setViewMode] = useState("default");
   const [isControlsVisible, setIsControlsVisible] = useState(true);
   const controlsTimeoutRef = useRef(null);
-
-  useEffect(() => {
-    if (!window.YT) {
-      const tag = document.createElement("script");
-      tag.src = "https://www.youtube.com/iframe_api";
-      const firstScriptTag = document.getElementsByTagName("script")[0];
-      firstScriptTag.parentNode?.insertBefore(tag, firstScriptTag);
-    }
-
-    const initPlayer = () => {
-      if (playerRef.current) {
-        playerRef.current.destroy();
-      }
-
-      playerRef.current = new window.YT.Player("youtube-player", {
-        videoId: videoId,
-        playerVars: {
-          autoplay: 0,
-          controls: 0,
-          modestbranding: 1,
-          rel: 0,
-          showinfo: 0,
-          fs: 0,
-          playsinline: 1,
-          iv_load_policy: 3,
-          disablekb: 1,
-          origin: window.location.origin,
-        },
-        events: {
-          onStateChange: (event) => {
-            setIsPlaying(event.data === window.YT.PlayerState.PLAYING);
-          },
-        },
-      });
-    };
-
-    if (window.YT && window.YT.Player) {
-      initPlayer();
-    } else {
-      window.onYouTubeIframeAPIReady = initPlayer;
-    }
-
-    return () => {
-      if (playerRef.current) {
-        playerRef.current.destroy();
-      }
-    };
-  }, [videoId]);
 
   useEffect(() => {
     const handleFullscreenChange = () => {
@@ -106,19 +59,21 @@ export default function VideoPlayer({ videoId }) {
   };
 
   const togglePlay = () => {
-    if (playerRef.current) {
+    const player = playerRef.current?.getInternalPlayer();
+    if (player) {
       if (isPlaying) {
-        playerRef.current.pauseVideo();
+        player.pauseVideo();
       } else {
-        playerRef.current.playVideo();
+        player.playVideo();
       }
       setIsPlaying(!isPlaying);
     }
   };
 
   const handleVolumeChange = (newVolume) => {
-    if (playerRef.current) {
-      playerRef.current.setVolume(newVolume * 100);
+    const player = playerRef.current?.getInternalPlayer();
+    if (player) {
+      player.setVolume(newVolume * 100);
       setVolume(newVolume);
       if (newVolume === 0) {
         setIsMuted(true);
@@ -129,20 +84,22 @@ export default function VideoPlayer({ videoId }) {
   };
 
   const toggleMute = () => {
-    if (playerRef.current) {
+    const player = playerRef.current?.getInternalPlayer();
+    if (player) {
       if (isMuted) {
-        playerRef.current.unMute();
-        playerRef.current.setVolume(volume * 100);
+        player.unMute();
+        player.setVolume(volume * 100);
       } else {
-        playerRef.current.mute();
+        player.mute();
       }
       setIsMuted(!isMuted);
     }
   };
 
   const handleSpeedChange = (value) => {
-    if (playerRef.current) {
-      playerRef.current.setPlaybackRate(parseFloat(value));
+    const player = playerRef.current?.getInternalPlayer();
+    if (player) {
+      player.setPlaybackRate(parseFloat(value));
       setCurrentSpeed(value);
     }
   };
@@ -162,6 +119,30 @@ export default function VideoPlayer({ videoId }) {
     return <Volume2 />;
   };
 
+  const onReady = (event) => {
+    playerRef.current = event.target;
+  };
+
+  const onStateChange = (event) => {
+    setIsPlaying(event.data === YouTube.PlayerState.PLAYING);
+  };
+
+  const opts = {
+    height: '100%',
+    width: '100%',
+    playerVars: {
+      autoplay: 0,
+      controls: 0,
+      modestbranding: 1,
+      rel: 0,
+      showinfo: 0,
+      fs: 0,
+      playsinline: 1,
+      iv_load_policy: 3,
+      disablekb: 1,
+    },
+  };
+
   return (
     <div
       ref={containerRef}
@@ -179,7 +160,13 @@ export default function VideoPlayer({ videoId }) {
           viewMode === "fullscreen" ? "h-screen" : "aspect-video"
         )}
       >
-        <div id="youtube-player" className="absolute inset-0 w-full h-full" />
+        <YouTube
+          videoId={videoId}
+          opts={opts}
+          onReady={onReady}
+          onStateChange={onStateChange}
+          className="absolute inset-0 w-full h-full"
+        />
       </div>
 
       {/* Overlay for play/pause on video click */}
