@@ -7,6 +7,8 @@ import "react-toastify/dist/ReactToastify.css";
 import Navbar from "@/components/Navbar/Navbar";
 import Breadcrumbs from "@/components/Common/Breadcrumbs";
 import renewAccessToken from "@/lib/token/renewAccessToken";
+import { Progress } from "@/components/ui/progress";
+import axios from "axios";
 
 // Constants
 const BREADCRUMB_ITEMS = [
@@ -19,9 +21,7 @@ const INITIAL_FORM_STATE = {
   subjectName: "",
   title: "",
   description: "",
-  youtubeLink: "",
 };
-
 
 const UploadLecturesPage = () => {
   const [formData, setFormData] = useState(INITIAL_FORM_STATE);
@@ -30,6 +30,57 @@ const UploadLecturesPage = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [errors, setErrors] = useState({});
   const [subjectInputMethod, setSubjectInputMethod] = useState(null); // 'new' or 'existing'
+  const [videoFile, setVideoFile] = useState(null);
+  const [uploadProgress, setUploadProgress] = useState(0);
+  const [isUploading, setIsUploading] = useState(false);
+
+  const handleFileChange = (e) => {
+    setVideoFile(e.target.files[0]);
+    setUploadProgress(0);
+  };
+  const handleUpload = async (e) => {
+    e.preventDefault();
+    if (!videoFile) return;
+
+    setIsUploading(true);
+    const uploadData = new FormData();
+    uploadData.append("file", videoFile);
+    uploadData.append(
+      "subjectName",
+      subjectInputMethod === "new" ? newSubject : formData.subjectName
+    );
+    uploadData.append("title", formData.title);
+    uploadData.append("description", formData.description);
+
+    try {
+      const token = await renewAccessToken();
+      await axios.post(
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/upload-resources/upload-lectures`,
+        uploadData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+            Authorization: `Bearer ${token}`,
+          },
+          onUploadProgress: (progressEvent) => {
+            const progress = Math.round(
+              (progressEvent.loaded * 100) / progressEvent.total
+            );
+            setUploadProgress(progress);
+          },
+        }
+      );
+
+      toast.success("Upload successful!");
+      setVideoFile(null);
+      setFormData(INITIAL_FORM_STATE); // Reset form data after successful upload
+    } catch (error) {
+      console.error("Upload error:", error);
+      alert("Upload failed");
+    } finally {
+      setIsUploading(false);
+    }
+  };
 
   useEffect(() => {
     fetchSubjects();
@@ -57,67 +108,6 @@ const UploadLecturesPage = () => {
     } catch (error) {
       console.error("Error fetching subjects:", error);
       toast.error("Failed to load subjects. Please try again later.");
-    }
-  };
-
-  const validateForm = () => {
-    const newErrors = {};
-
-    // Subject validation
-    if (!subjectInputMethod) {
-      newErrors.subject =
-        "Please either select an existing subject or create a new one";
-    } else if (subjectInputMethod === "new") {
-      if (!newSubject.trim()) {
-        newErrors.subject = "Please enter a new subject name";
-      } else if (newSubject.length < 3) {
-        newErrors.subject = "Subject name must be at least 3 characters long";
-      } else if (
-        subjects.some(
-          (subject) => subject.name.toLowerCase() === newSubject.toLowerCase()
-        )
-      ) {
-        newErrors.subject =
-          "This subject already exists. Please select it from the dropdown";
-      }
-    } else if (subjectInputMethod === "existing" && !formData.subjectName) {
-      newErrors.subject = "Please select a subject";
-    }
-
-    // Title validation
-    if (!formData.title.trim()) {
-      newErrors.title = "Title is required";
-    } else if (formData.title.length < 5) {
-      newErrors.title = "Title must be at least 5 characters long";
-    }
-
-    // Description validation
-    if (!formData.description.trim()) {
-      newErrors.description = "Description is required";
-    } else if (formData.description.length < 20) {
-      newErrors.description = "Description must be at least 20 characters long";
-    }
-
-    // Youtube link validation
-    if (!formData.youtubeLink.trim()) {
-      newErrors.youtubeLink = "Youtube link is required";
-    } else if (!isValidUrl(formData.youtubeLink)) {
-      newErrors.youtubeLink = "Please enter a valid Youtube Video URL";
-    }
-
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
-  };
-
-  const isValidUrl = (url) => {
-    try {
-      const parsedUrl = new URL(url);
-      return (
-        parsedUrl.hostname === "www.youtube.com" ||
-        parsedUrl.hostname === "youtube.com"
-      );
-    } catch {
-      return false;
     }
   };
 
@@ -153,53 +143,6 @@ const UploadLecturesPage = () => {
     }
     if (errors.subject) {
       setErrors((prev) => ({ ...prev, subject: undefined }));
-    }
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-
-    if (!validateForm()) {
-      toast.error("Please correct the errors in the form");
-      return;
-    }
-
-    setIsLoading(true);
-
-    try {
-      const token = await renewAccessToken();
-      const response = await fetch(
-        `${process.env.NEXT_PUBLIC_BACKEND_URL}/upload-resources/upload-lectures`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-          body: JSON.stringify({
-            ...formData,
-            subjectName:
-              subjectInputMethod === "new" ? newSubject : formData.subjectName,
-          }),
-        }
-      );
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.message || "Failed to upload resource");
-      }
-
-      toast.success("Resource uploaded successfully!");
-      setFormData(INITIAL_FORM_STATE);
-      setNewSubject("");
-      setSubjectInputMethod(null);
-    } catch (error) {
-      console.error("Error uploading resource:", error);
-      toast.error(
-        error.message || "Failed to upload resource. Please try again."
-      );
-    } finally {
-      setIsLoading(false);
     }
   };
 
@@ -269,39 +212,8 @@ const UploadLecturesPage = () => {
           <div className="flex items-center gap-3 mt-8 lg:mt-12">
             <h2 className="text-2xl font-bold text-black">Upload Lectures</h2>
           </div>
-          <div className="bg-blue-50 border-l-4 border-blue-500 text-blue-700 p-4 rounded-md mt-6">
-            <h3 className="font-bold text-lg mb-2">
-              How to Upload Your YouTube Video as Unlisted (for Selected
-              Students)
-            </h3>
-            <ul className="list-disc list-inside text-sm text-blue-800 space-y-1">
-              <li>Open YouTube and upload the video you want to share.</li>
-              <li>
-                During the upload process, in the "Visibility" section, select{" "}
-                <strong>"Unlisted"</strong> if you don't want the video to be
-                public.
-              </li>
-              <li>
-                This will allow only people with the link to view the video,
-                keeping it private from others.
-              </li>
-              <li>
-                Once the video is uploaded, click the <strong>"Share"</strong>{" "}
-                button.
-              </li>
-              <li>
-                Click <strong>"Copy link"</strong> to copy the unlisted video
-                link.
-              </li>
-              <li>
-                Paste the copied link into the form below to share it with the
-                selected students.
-              </li>
-            </ul>
-          </div>
-
           <form
-            onSubmit={handleSubmit}
+            onSubmit={handleUpload}
             className="max-w-4xl mx-auto p-6 bg-white shadow-md rounded-md mt-6"
           >
             <h2 className="text-xl font-semibold mb-4">Upload Resource</h2>
@@ -362,22 +274,27 @@ const UploadLecturesPage = () => {
 
             {renderFormField("Resource Title", "title")}
             {renderFormField("Description", "description", "textarea")}
-            {renderFormField("Youtube Link", "youtubeLink", "url")}
-
-            <div className="mt-6">
-              <button
-                type="submit"
-                disabled={isLoading}
-                className={`w-full p-2 bg-blue-500 text-white rounded-md transition-colors
-                  ${
-                    isLoading
-                      ? "bg-blue-400 cursor-not-allowed"
-                      : "hover:bg-blue-600"
-                  }`}
-              >
-                {isLoading ? "Uploading..." : "Upload Resource"}
-              </button>
-            </div>
+            <input
+              type="file"
+              accept="video/*"
+              onChange={handleFileChange}
+              className="w-full p-2 border rounded-md mb-4"
+              disabled={isUploading}
+            />
+            {videoFile && (
+              <div className="space-y-4">
+                <Progress value={uploadProgress} className="w-full" />
+                <button
+                  type="submit"
+                  disabled={isUploading}
+                  className="w-full bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600 disabled:bg-blue-300"
+                >
+                  {isUploading
+                    ? `Uploading ${uploadProgress}%`
+                    : "Upload Video"}
+                </button>
+              </div>
+            )}
           </form>
         </div>
         <ToastContainer position="top-right" autoClose={5000} />
