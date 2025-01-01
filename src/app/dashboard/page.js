@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import {
+  UserPlus,
   Plus,
   BookOpen,
   PenTool,
@@ -14,11 +15,8 @@ import {
   GraduationCap,
   PlusCircle,
   Edit3,
-  FileText,
-  Video,
-  MessageSquare,
-  ClipboardCheck,
   Upload,
+  UserCheck,
 } from "lucide-react";
 import jwt from "jsonwebtoken";
 import StatsCard from "@/components/Dashboard/StatsCard";
@@ -27,6 +25,7 @@ import ActivityItem from "@/components/Dashboard/ActivityItem";
 import Navbar from "@/components/Navbar/Navbar";
 import Loader from "@/components/Common/Loader";
 import withAuth from "@/components/Auth/withAuth";
+import renewAccessToken from "@/lib/token/renewAccessToken";
 
 function Dashboard() {
   const [userName, setUserName] = useState("User");
@@ -34,20 +33,25 @@ function Dashboard() {
   const [showNotification, setShowNotification] = useState(false);
   const [loading, setLoading] = useState(true); // Loader state
   useEffect(() => {
-    let token = localStorage.getItem("token");
-    if (token) {
-      try {
-        const decoded = jwt.decode(token);
-        if (decoded.userRole == "admin") {
-          setAdmin("admin");
+    const fetchData = async () => {
+      let token = await renewAccessToken();
+      if (token) {
+        try {
+          const decoded = jwt.decode(token);
+          if (decoded.userRole === "admin") {
+            setAdmin("admin");
+          }
+          setUserName(decoded.firstName || "User");
+          setLoading(false);
+        } catch (error) {
+          console.error("Error decoding token:", error);
         }
-        setUserName(decoded.firstName || "User"); // Update this field based on your token structure
-        setLoading(false);
-      } catch (error) {
-        console.error("Error decoding token:", error);
       }
-    }
+    };
+
+    fetchData();
   }, []);
+
   if (loading) {
     // Show loader while loading
     return (
@@ -118,12 +122,11 @@ function Dashboard() {
           />
         </div>
         {/* Main Actions Grid */}
-
-        {/* Study Materials */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+                {/* Study Materials */}
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
           <div className="lg:col-span-4 mb-6">
             <div className="flex items-center gap-3">
-              <Edit3 className="text-green-600" size={27} />
+              <Edit3 className="text-blue-600" size={27} />
               <h2 className="text-2xl font-bold text-black">Study Materials</h2>
             </div>
           </div>
@@ -144,30 +147,6 @@ function Dashboard() {
             description="Access study notes and lectures for all topics"
             href="/view-resources"
           />
-          {/* <ActionCard
-            icon={FileText}
-            title="View Notes"
-            description="Access and download study notes for all topics"
-            href="#"
-          />
-          <ActionCard
-            icon={Video}
-            title="Recorded Lectures"
-            description="Watch and learn from recorded video sessions"
-            href="#"
-          />
-          <ActionCard
-            icon={MessageSquare}
-            title="Discussion Forums"
-            description="Join discussions and collaborate with peers"
-            href="#"
-          />
-          <ActionCard
-            icon={ClipboardCheck}
-            title="Mock Tests"
-            description="Practice and evaluate your knowledge with mock tests"
-            href="#"
-          /> */}
         </div>
         {/* Online Test */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
@@ -193,8 +172,8 @@ function Dashboard() {
           )}
           <ActionCard
             icon={PenTool}
-            title="Start the Exam"
-            description="Begin your scheduled exam session via Exam Code"
+            title="Your Exams"
+            description="Take your scheduled exams online"
             href="/take-exam"
           />
           <ActionCard
@@ -203,60 +182,65 @@ function Dashboard() {
             description="Track and analyze exam results and ranking"
             href="/view-performance"
           />
-          {/* <ActionCard
-            icon={Book}
-            title="Resources & Materials"
-            description="Access study materials and helpful resources for preparation."
-            href="#"
-          />
-          <ActionCard
-            icon={HelpCircle}
-            title="FAQs"
-            description="Find answers to commonly asked questions about the exam process."
-            href="#"
-          /> */}
         </div>
-
-        {/* Mock MCQ Exams Grid */}
-        {/* <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+        {/* Schedule & Notify */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
           <div className="lg:col-span-4 mb-6">
             <div className="flex items-center gap-3">
-              <Edit3 className="text-blue-600" size={27} />
+              <UserPlus className="text-blue-600" size={27} />
               <h2 className="text-2xl font-bold text-black">
-                Mock MCQ Exams (Coming Soon)
+                Schedule & Notify
               </h2>
             </div>
           </div>
-          <ActionCard
-            icon={PlusCircle}
-            title="Create Mock Exam"
-            description="Design and set up new mock exams"
-            href="#"
-            disabled="true"
-          />
-          <ActionCard
-            icon={BookOpen}
-            title="Manage Mocks"
-            description="View, edit, and manage existing mock exams"
-            href="#"
-            disabled="true"
-          />
-          <ActionCard
-            icon={PenTool}
-            title="Take Mock Exam"
-            description="Begin your scheduled mock exam session"
-            href="#"
-            disabled="true"
-          />
-          <ActionCard
-            icon={BarChart3}
-            title="Mock Performance"
-            description="Track and analyze mock exam results and ranking"
-            href="#"
-            disabled="true"
-          />
-        </div> */}
-
+          {isAdmin === "admin" && (
+            <>
+              <ActionCard
+                icon={Calendar}
+                title="Schedule Online Classes"
+                description="Schedule upcoming online classes"
+                href="#"
+              />
+              <ActionCard
+                icon={Bell}
+                title="Notify Students"
+                description="Notify students about upcoming classes"
+                href="#"
+              />
+            </>
+          )}
+        </div>
+        {/* Manage Access */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+          <div className="lg:col-span-4 mb-6">
+            <div className="flex items-center gap-3">
+              <UserPlus className="text-blue-600" size={27} />
+              <h2 className="text-2xl font-bold text-black">Manage Access</h2>
+            </div>
+          </div>
+          {isAdmin === "admin" && (
+            <>
+              <ActionCard
+                icon={UserPlus}
+                title="Add New Student"
+                description="Add new students to the system"
+                href="#"
+              />
+              <ActionCard
+                icon={BookOpen}
+                title="Add New Subject"
+                description="Add new subjects to the system"
+                href="#"
+              />
+              <ActionCard
+                icon={UserCheck}
+                title="Add New Teacher"
+                description="Add new teachers to the system"
+                href="#"
+              />
+            </>
+          )}
+        </div>
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Recent Activity Section */}
           <div className="lg:col-span-2">
