@@ -1,13 +1,12 @@
 "use client";
 
-import React, { useEffect, useState, use } from "react";
+import React, { useEffect, useState,use } from "react";
 import { Loader, AlertCircle, BookOpen } from "lucide-react";
 import renewAccessToken from "@/lib/token/renewAccessToken";
 import Navbar from "@/components/Navbar/Navbar";
 import Breadcrumbs from "@/components/Common/Breadcrumbs";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import VideoPlayer from "@/components/VideoPlayer/VideoPlayer";
 
 function Page({ params }) {
   const { subjectName } = use(params);
@@ -44,7 +43,6 @@ function Page({ params }) {
 
         const data = await response.json();
         setNotes(data.resources || []);
-        // Set the first lecture as selected by default
         if (data.resources && data.resources.length > 0) {
           setSelectedLecture(data.resources[0]);
         }
@@ -57,12 +55,6 @@ function Page({ params }) {
 
     fetchNotesBySubject();
   }, [subjectName]);
-
-  const getYouTubeVideoId = (url) => {
-    const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=)([^#&?]*).*/;
-    const match = url.match(regExp);
-    return match && match[2].length === 11 ? match[2] : null;
-  };
 
   if (loading) {
     return (
@@ -93,13 +85,11 @@ function Page({ params }) {
       <Navbar />
       <div className="min-h-screen bg-gradient-to-b from-gray-50 to-gray-100">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-          <div className="mt-16">
-            <Breadcrumbs items={BREADCRUMB_ITEMS} />
-          </div>
-          
+
           <h2 className="text-3xl font-bold text-gray-900 mb-6">
             Lectures for <span className="text-blue-600">{subjectName}</span>
           </h2>
+          <Breadcrumbs items={BREADCRUMB_ITEMS} />
 
           <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
             {/* Lecture List - Right Side */}
@@ -141,16 +131,18 @@ function Page({ params }) {
             <div className="lg:col-span-3">
               {selectedLecture ? (
                 <div className="bg-white rounded-lg shadow-md p-4">
-                  <VideoPlayer 
-                    videoId={getYouTubeVideoId(selectedLecture.resourceLink)} 
-                  />
+                  <video
+                    className="w-full rounded-lg"
+                    controls
+                    src={selectedLecture.resourceLink}
+                  >
+                    Your browser does not support the video tag.
+                  </video>
                   <div className="mt-4">
                     <h3 className="text-2xl font-semibold text-gray-900">
                       {selectedLecture.title}
                     </h3>
-                    <p className="mt-2 text-gray-600">
-                      {selectedLecture.description}
-                    </p>
+                    <p className="mt-2 text-gray-600">{selectedLecture.description}</p>
                   </div>
                 </div>
               ) : (
@@ -164,18 +156,7 @@ function Page({ params }) {
             </div>
           </div>
         </div>
-        <ToastContainer
-          position="top-right"
-          autoClose={5000}
-          hideProgressBar={false}
-          newestOnTop
-          closeOnClick
-          rtl={false}
-          pauseOnFocusLoss
-          draggable
-          pauseOnHover
-          theme="light"
-        />
+        <ToastContainer />
       </div>
     </>
   );
