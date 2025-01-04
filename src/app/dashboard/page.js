@@ -12,13 +12,11 @@ import {
   CheckCircle,
   Bell,
   PlusCircle,
-  Search,
   X,
 } from "lucide-react";
 import jwt from "jsonwebtoken";
 import StatsCard from "@/components/Dashboard/StatsCard";
 import ActionCard from "@/components/Dashboard/ActionCard";
-import ActivityItem from "@/components/Dashboard/ActivityItem";
 import Navbar from "@/components/Navbar/Navbar";
 import Loader from "@/components/Common/Loader";
 import withAuth from "@/components/Auth/withAuth";
@@ -79,7 +77,7 @@ const handleGetStartedClick = () => {
       );
       if (response.ok) {
         const data = await response.json();
-        setNotifications(data.data || []);
+        setNotifications(data || []);
       } else {
         toast.error("Failed to fetch notifications");
       }
