@@ -13,14 +13,17 @@ import {
   Bell,
   PlusCircle,
   X,
+  Gift,
 } from "lucide-react";
 import jwt from "jsonwebtoken";
 import StatsCard from "@/components/Dashboard/StatsCard";
+import ActivityItem from "@/components/Dashboard/ActivityItem";
 import ActionCard from "@/components/Dashboard/ActionCard";
 import Navbar from "@/components/Navbar/Navbar";
 import Loader from "@/components/Common/Loader";
 import withAuth from "@/components/Auth/withAuth";
 import renewAccessToken from "@/lib/token/renewAccessToken";
+import NotificationPanel from "@/components/Common/NotificationPanel";
 // Function to track events using Google Analytics
 function trackEvent(action, category, label) {
   if (typeof window !== "undefined" && window.gtag) {
@@ -37,15 +40,15 @@ function Dashboard() {
   const [notifications, setNotifications] = useState([]);
   const [loading, setLoading] = useState(true);
   const [notificationLoading, setNotificationLoading] = useState(false);
- // Track Learn More button click
- const handleLearnMoreClick = () => {
-  trackEvent("click", "NonAdmin_Engagement", "Learn_More");
-};
+  // Track Learn More button click
+  const handleLearnMoreClick = () => {
+    trackEvent("click", "NonAdmin_Engagement", "Learn_More");
+  };
 
-// Track Get Started button click
-const handleGetStartedClick = () => {
-  trackEvent("click", "NonAdmin_Engagement", "Get_Started");
-};
+  // Track Get Started button click
+  const handleGetStartedClick = () => {
+    trackEvent("click", "NonAdmin_Engagement", "Get_Started");
+  };
   useEffect(() => {
     const fetchData = async () => {
       const token = await renewAccessToken();
@@ -103,66 +106,6 @@ const handleGetStartedClick = () => {
     );
   }
 
-  const NotificationPanel = () => (
-    <div className="absolute right-0 mt-2 bg-white rounded-lg shadow-xl border border-gray-100 w-96 overflow-hidden z-50">
-      <div className="p-4 border-b border-gray-100 flex justify-between items-center">
-        <h3 className="font-semibold text-gray-800">Notifications</h3>
-        <button
-          onClick={() => setShowNotification(false)}
-          className="text-gray-500 hover:text-gray-700"
-        >
-          <X className="h-4 w-4" />
-        </button>
-      </div>
-
-      <div className="max-h-[400px] overflow-y-auto">
-        {notificationLoading ? (
-          <div className="flex justify-center items-center h-32">
-            <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-blue-600"></div>
-          </div>
-        ) : notifications.length > 0 ? (
-          <div className="divide-y divide-gray-100">
-            {notifications.map((notification, index) => (
-              <div
-                key={index}
-                className="p-4 hover:bg-gray-50 transition-colors"
-              >
-                <div className="flex items-start gap-3">
-                  <div className="h-2 w-2 rounded-full bg-blue-600 mt-2"></div>
-                  <div>
-                    <p className="text-sm text-gray-800">
-                      {notification.message}
-                    </p>
-                    <p className="text-xs text-gray-500 mt-1">
-                      {notification.timestamp}
-                    </p>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        ) : (
-          <div className="p-8 text-center">
-            <Bell className="h-12 w-12 text-gray-400 mx-auto mb-3" />
-            <p className="text-gray-600">No new notifications</p>
-            <p className="text-sm text-gray-400 mt-1">
-              We'll notify you when something arrives
-            </p>
-          </div>
-        )}
-      </div>
-
-      <div className="p-3 border-t border-gray-100 bg-gray-50">
-        <Link
-          href="#"
-          className="block text-center text-sm text-blue-600 hover:text-blue-700 font-medium"
-        >
-          View all notifications
-        </Link>
-      </div>
-    </div>
-  );
-
   return (
     <div className="min-h-screen bg-gray-50">
       <Navbar />
@@ -183,42 +126,51 @@ const handleGetStartedClick = () => {
                 <button
                   onClick={handleNotificationClick}
                   className="p-2 rounded-lg hover:bg-gray-100 relative transition-all duration-200"
+                  aria-label="Toggle notifications"
                 >
                   <Bell className="w-6 h-6 text-gray-600" />
                   <span className="absolute top-0 right-0 w-2 h-2 bg-red-500 rounded-full"></span>
                 </button>
-                {showNotification && <NotificationPanel />}
+
+                {showNotification && (
+                  <NotificationPanel
+                    notifications={notifications}
+                    loading={notificationLoading}
+                    onClose={() => setShowNotification(false)}
+                  />
+                )}
               </div>
             </div>
           </div>
         </div>
         {!isAdmin && (
-        <div className="bg-white rounded-lg shadow-sm border border-gray-100 p-6 mb-8">
-          <h2 className="text-2xl font-semibold text-gray-800 mb-2">
-            Interested in Conducting Online MCQ Exams?
-          </h2>
-          <p className="text-gray-600 mb-4">
-            Create and manage professional online MCQ exams effortlessly.
-            Enhance the experience for students with a sleek and user-friendly interface.
-          </p>
-          <div className="flex items-center gap-4">
-            <Link
-              href="/learn-more"
-              onClick={handleLearnMoreClick}
-              className="px-4 py-2 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 transition"
-            >
-              Learn More
-            </Link>
-            <Link
-              href="get-started"
-              onClick={handleGetStartedClick}
-              className="px-4 py-2 border border-blue-600 text-blue-600 font-medium rounded-lg hover:bg-blue-50 transition"
-            >
-              Get Started
-            </Link>
+          <div className="bg-white rounded-lg shadow-sm border border-gray-100 p-6 mb-8">
+            <h2 className="text-2xl font-semibold text-gray-800 mb-2">
+              Interested in Conducting Online MCQ Exams?
+            </h2>
+            <p className="text-gray-600 mb-4">
+              Create and manage professional online MCQ exams effortlessly.
+              Enhance the experience for students with a sleek and user-friendly
+              interface.
+            </p>
+            <div className="flex items-center gap-4">
+              <Link
+                href="/learn-more"
+                onClick={handleLearnMoreClick}
+                className="px-4 py-2 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 transition"
+              >
+                Learn More
+              </Link>
+              <Link
+                href="get-started"
+                onClick={handleGetStartedClick}
+                className="px-4 py-2 border border-blue-600 text-blue-600 font-medium rounded-lg hover:bg-blue-50 transition"
+              >
+                Get Started
+              </Link>
+            </div>
           </div>
-        </div>
-      )}
+        )}
         {/* Stats Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
           <StatsCard
@@ -293,6 +245,72 @@ const handleGetStartedClick = () => {
             className="bg-gradient-to-br from-orange-50 to-orange-100 hover:from-orange-100 hover:to-orange-200"
             iconClassName="text-orange-600"
           />
+        </div>
+
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          {/* Recent Activity Section */}
+          <div className="lg:col-span-2">
+            <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+              <div className="flex items-center justify-between mb-6">
+                <h2 className="text-xl font-semibold text-gray-800">
+                  Recent Activity
+                </h2>
+                <Link
+                  href="/all-activity"
+                  className="text-blue-600 hover:text-blue-700 text-sm font-medium"
+                >
+                  View All
+                </Link>
+              </div>
+              <div className="space-y-2">
+                <ActivityItem
+                  title="Mathematics Final Exam Created"
+                  time="2 hours ago"
+                  type="exam"
+                  href="/exam/1"
+                />
+                <ActivityItem
+                  title="New Student Submissions"
+                  time="4 hours ago"
+                  type="alert"
+                  href="/submissions"
+                />
+                <ActivityItem
+                  title="Physics Quiz Completed"
+                  time="6 hours ago"
+                  type="success"
+                  href="/exam/2"
+                />
+              </div>
+            </div>
+          </div>
+
+          {/* Quick Tips Section */}
+          <div className="lg:col-span-1">
+            <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+              <div className="flex items-center justify-between mb-6">
+                <h2 className="text-xl font-semibold text-gray-800">
+                  Quick Tips
+                </h2>
+                <Gift className="w-5 h-5 text-blue-600" />
+              </div>
+              <div className="space-y-4">
+                {[
+                  "Receive an email for the live mock test",
+                  "Click on the link in the email to start the exam",
+                  "Submit the exam to receive results along with marks",
+                  "View your rank after submission",
+                ].map((tip, index) => (
+                  <div key={index} className="flex items-start space-x-3 group">
+                    <div className="w-2 h-2 bg-blue-600 rounded-full mt-2 group-hover:scale-125 transition-transform duration-200" />
+                    <p className="text-gray-600 group-hover:text-gray-900 transition-colors duration-200">
+                      {tip}
+                    </p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
