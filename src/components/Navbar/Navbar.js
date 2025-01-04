@@ -62,19 +62,19 @@ export default function Navbar() {
           {/* <NavLink href="/pricing" icon={Wallet} ariaLabel="View Pricing Plans">
             Pricing
           </NavLink> */}
-          <NavLink href="/waiting-list" icon={Clock} ariaLabel="View Pricing Plans">
+          {/* <NavLink href="/waiting-list" icon={Clock} ariaLabel="View Pricing Plans">
             Waiting List
-          </NavLink>
+          </NavLink> */}
           <NavLink href="/login" icon={User} ariaLabel="Login to Your Account">
             Login
           </NavLink>
-          {/* <NavLink
+          <NavLink
             href="/register"
             icon={UserPlus}
             ariaLabel="Create New Account"
           >
             Register
-          </NavLink> */}
+          </NavLink>
        
         </>
       ) : (

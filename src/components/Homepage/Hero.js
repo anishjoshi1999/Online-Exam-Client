@@ -2,6 +2,7 @@
 import React from "react";
 import { ArrowRight, Play } from "lucide-react";
 import Image from "next/image";
+import Link from "next/link";
 
 const useInView = () => {
   const [isInView, setIsInView] = React.useState(false);
@@ -138,16 +139,18 @@ export function Hero() {
                   isInView ? "animate-fade-in-up" : ""
                 }`}
               >
-                <button
+                <Link
+                  href={"/login"}
                   className="group bg-white text-blue-600 w-full sm:w-auto px-8 py-4 rounded-lg font-semibold hover:bg-blue-50 transition-all duration-300 flex items-center justify-center gap-2 shadow-lg hover:shadow-xl focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-blue-600 focus:outline-none"
                   aria-label="Start your free trial with StartTest.Online"
                 >
-                  Start Testing Now
+                  {" "}
                   <ArrowRight
                     className="h-5 w-5 group-hover:translate-x-1 transition-transform"
                     aria-hidden="true"
                   />
-                </button>
+                  Start Testing Now
+                </Link>
 
                 <button
                   className="group bg-transparent border-2 w-full sm:w-auto border-white/70 px-8 py-4 rounded-lg font-semibold hover:bg-white/10 transition-all duration-300 backdrop-blur-sm flex items-center justify-center gap-2 focus:ring-2 focus:ring-white focus:outline-none"
