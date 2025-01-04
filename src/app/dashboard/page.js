@@ -122,8 +122,8 @@ function Dashboard() {
           />
         </div>
         {/* Main Actions Grid */}
-                {/* Study Materials */}
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+        {/* Study Materials */}
+        {/* <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
           <div className="lg:col-span-4 mb-6">
             <div className="flex items-center gap-3">
               <Edit3 className="text-blue-600" size={27} />
@@ -147,7 +147,7 @@ function Dashboard() {
             description="Access study notes and lectures for all topics"
             href="/view-resources"
           />
-        </div>
+        </div> */}
         {/* Online Test */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
           <div className="lg:col-span-4 flex items-center gap-3">
@@ -184,7 +184,7 @@ function Dashboard() {
           />
         </div>
         {/* Schedule & Notify */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+        {/* <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
           <div className="lg:col-span-4 mb-6">
             <div className="flex items-center gap-3">
               <UserPlus className="text-blue-600" size={27} />
@@ -209,7 +209,7 @@ function Dashboard() {
               />
             </>
           )}
-        </div>
+        </div> */}
         {/* Manage Access */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
           <div className="lg:col-span-4 mb-6">
@@ -224,20 +224,20 @@ function Dashboard() {
                 icon={UserPlus}
                 title="Add New Student"
                 description="Add new students to the system"
-                href="#"
+                href="/manage-students"
               />
               <ActionCard
                 icon={BookOpen}
                 title="Add New Subject"
                 description="Add new subjects to the system"
-                href="#"
+                href="/manage-subjects"
               />
-              <ActionCard
+              {/* <ActionCard
                 icon={UserCheck}
                 title="Add New Teacher"
                 description="Add new teachers to the system"
                 href="#"
-              />
+              /> */}
             </>
           )}
         </div>
