@@ -14,6 +14,7 @@ const fetchExamData = async (
   setError(null); // Reset error
 
   try {
+    
     let token = await renewAccessToken();
     const res = await fetch(
       `${process.env.NEXT_PUBLIC_BACKEND_URL}/take-exam/${slug}`,
