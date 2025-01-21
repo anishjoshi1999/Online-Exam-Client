@@ -3,7 +3,7 @@ import { Bell, X } from 'lucide-react';
 
 const NotificationPanel = ({ notifications, onClose, loading }) => {
   return (
-    <div className="fixed inset-x-0 top-16 mx-4 md:absolute md:inset-auto md:right-0 md:top-full md:mt-2 md:w-96">
+    <div className="fixed inset-x-0 top-16 mx-4 md:absolute md:inset-auto md:right-0 md:top-full md:mt-2 md:w-96 z-[9999]">
       <div className="bg-white rounded-lg shadow-xl border border-gray-100 max-w-lg mx-auto md:mx-0 overflow-hidden">
         {/* Header */}
         <div className="p-4 border-b border-gray-100 flex justify-between items-center">

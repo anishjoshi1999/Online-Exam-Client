@@ -7,16 +7,17 @@ import {
   BookOpen,
   PenTool,
   BarChart3,
-  Users,
-  Calendar,
+  Clock,
   CheckCircle,
   Bell,
   PlusCircle,
-  X,
   Gift,
+  Shield,
+  Wifi,
+  ArrowRight,
 } from "lucide-react";
+import { Card } from "@/components/ui/card";
 import jwt from "jsonwebtoken";
-import StatsCard from "@/components/Dashboard/StatsCard";
 import ActivityItem from "@/components/Dashboard/ActivityItem";
 import ActionCard from "@/components/Dashboard/ActionCard";
 import Navbar from "@/components/Navbar/Navbar";
@@ -172,39 +173,112 @@ function Dashboard() {
           </div>
         )}
         {/* Stats Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-          <StatsCard
-            title="Total Exams"
-            value="24"
-            change={12}
-            icon={BookOpen}
-            className="bg-gradient-to-br from-blue-50 to-blue-100 border-blue-200"
-            iconClassName="text-blue-600"
-          />
-          <StatsCard
-            title="Active Students"
-            value="156"
-            change={-8}
-            icon={Users}
-            className="bg-gradient-to-br from-green-50 to-green-100 border-green-200"
-            iconClassName="text-green-600"
-          />
-          <StatsCard
-            title="Completion Rate"
-            value="87%"
-            change={5}
-            icon={CheckCircle}
-            className="bg-gradient-to-br from-purple-50 to-purple-100 border-purple-200"
-            iconClassName="text-purple-600"
-          />
-          <StatsCard
-            title="Upcoming Exams"
-            value="8"
-            change={0}
-            icon={Calendar}
-            className="bg-gradient-to-br from-orange-50 to-orange-100 border-orange-200"
-            iconClassName="text-orange-600"
-          />
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+          {/* System Status Card */}
+          <Card className="relative overflow-hidden group hover:shadow-lg transition-all duration-300">
+            <div className="absolute top-0 left-0 w-1 h-full bg-green-500" />
+            <div className="p-6">
+              <div className="flex items-center gap-3 mb-3">
+                <div className="p-2 bg-green-100 rounded-lg">
+                  <CheckCircle className="w-5 h-5 text-green-600" />
+                </div>
+                <h3 className="font-semibold text-gray-900">System Check</h3>
+              </div>
+              <div className="space-y-2">
+                <div className="flex items-center text-sm text-gray-600">
+                  <CheckCircle className="w-4 h-4 mr-2 text-green-500" />
+                  Camera Access Enabled
+                </div>
+                <div className="flex items-center text-sm text-gray-600">
+                  <CheckCircle className="w-4 h-4 mr-2 text-green-500" />
+                  Microphone Connected
+                </div>
+                <Link
+                  href="#"
+                  className="inline-flex items-center text-sm text-green-600 hover:text-green-700 mt-2"
+                >
+                  Run Full Check <ArrowRight className="w-4 h-4 ml-1" />
+                </Link>
+              </div>
+            </div>
+          </Card>
+
+          {/* Browser Compatibility */}
+          <Card className="relative overflow-hidden group hover:shadow-lg transition-all duration-300">
+            <div className="absolute top-0 left-0 w-1 h-full bg-blue-500" />
+            <div className="p-6">
+              <div className="flex items-center gap-3 mb-3">
+                <div className="p-2 bg-blue-100 rounded-lg">
+                  <Shield className="w-5 h-5 text-blue-600" />
+                </div>
+                <h3 className="font-semibold text-gray-900">Browser Status</h3>
+              </div>
+              <div className="space-y-2">
+                <p className="text-sm text-gray-600">Chrome 121.0.6167.85</p>
+                <div className="flex items-center text-sm text-gray-600">
+                  <CheckCircle className="w-4 h-4 mr-2 text-green-500" />
+                  Latest Version Detected
+                </div>
+                <Link
+                  href="#"
+                  className="inline-flex items-center text-sm text-blue-600 hover:text-blue-700 mt-2"
+                >
+                  View Requirements <ArrowRight className="w-4 h-4 ml-1" />
+                </Link>
+              </div>
+            </div>
+          </Card>
+
+          {/* Connection Status */}
+          <Card className="relative overflow-hidden group hover:shadow-lg transition-all duration-300">
+            <div className="absolute top-0 left-0 w-1 h-full bg-purple-500" />
+            <div className="p-6">
+              <div className="flex items-center gap-3 mb-3">
+                <div className="p-2 bg-purple-100 rounded-lg">
+                  <Wifi className="w-5 h-5 text-purple-600" />
+                </div>
+                <h3 className="font-semibold text-gray-900">Network Check</h3>
+              </div>
+              <div className="space-y-2">
+                <div className="flex items-center text-sm text-gray-600">
+                  <CheckCircle className="w-4 h-4 mr-2 text-green-500" />
+                  Strong Connection
+                </div>
+                <p className="text-sm text-gray-600">Latency: 45ms</p>
+                <Link
+                  href="#"
+                  className="inline-flex items-center text-sm text-purple-600 hover:text-purple-700 mt-2"
+                >
+                  Test Connection <ArrowRight className="w-4 h-4 ml-1" />
+                </Link>
+              </div>
+            </div>
+          </Card>
+
+          {/* Time Status */}
+          <Card className="relative overflow-hidden group hover:shadow-lg transition-all duration-300">
+            <div className="absolute top-0 left-0 w-1 h-full bg-orange-500" />
+            <div className="p-6">
+              <div className="flex items-center gap-3 mb-3">
+                <div className="p-2 bg-orange-100 rounded-lg">
+                  <Clock className="w-5 h-5 text-orange-600" />
+                </div>
+                <h3 className="font-semibold text-gray-900">Time Zone</h3>
+              </div>
+              <div className="space-y-2">
+                <p className="text-sm text-gray-600">Current: Asia/Kolkata</p>
+                <p className="text-sm text-gray-600">
+                  Local Time: {new Date().toLocaleTimeString()}
+                </p>
+                <Link
+                  href="#"
+                  className="inline-flex items-center text-sm text-orange-600 hover:text-orange-700 mt-2"
+                >
+                  Verify Settings <ArrowRight className="w-4 h-4 ml-1" />
+                </Link>
+              </div>
+            </div>
+          </Card>
         </div>
 
         {/* Actions Grid */}
