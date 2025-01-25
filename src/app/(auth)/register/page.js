@@ -41,7 +41,7 @@ export default function Register() {
         toast.success("Verification email has been sent. Please check your inbox!");
         setTimeout(() => {
           router.push(`/login`);
-        }, 1000);
+        }, 5000);
       } else {
         const data = await res.json();
         toast.error(data.error || "Registration failed");

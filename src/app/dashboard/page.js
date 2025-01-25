@@ -25,6 +25,11 @@ import Loader from "@/components/Common/Loader";
 import withAuth from "@/components/Auth/withAuth";
 import renewAccessToken from "@/lib/token/renewAccessToken";
 import NotificationPanel from "@/components/Common/NotificationPanel";
+import SystemStatusCheck from "@/components/StatusCard/SystemStatusCheck";
+import ConnectionStatusCheck from "@/components/StatusCard/ConnectionStatusCheck";
+import TimeStatusCheck from "@/components/StatusCard/TimeStatusCheck";
+import BrowserCompatibilityCheck from "@/components/StatusCard/BrowserCompatibilityCheck";
+import ExamPromoBanner from "@/components/Dashboard/ExamPromoBanner";
 // Function to track events using Google Analytics
 function trackEvent(action, category, label) {
   if (typeof window !== "undefined" && window.gtag) {
@@ -144,141 +149,17 @@ function Dashboard() {
             </div>
           </div>
         </div>
-        {/* {!isAdmin && (
-          <div className="bg-white rounded-lg shadow-sm border border-gray-100 p-6 mb-8">
-            <h2 className="text-2xl font-semibold text-gray-800 mb-2">
-              Interested in Conducting Online MCQ Exams?
-            </h2>
-            <p className="text-gray-600 mb-4">
-              Create and manage professional online MCQ exams effortlessly.
-              Enhance the experience for students with a sleek and user-friendly
-              interface.
-            </p>
-            <div className="flex items-center gap-4">
-              <Link
-                href="/learn-more"
-                onClick={handleLearnMoreClick}
-                className="px-4 py-2 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 transition"
-              >
-                Learn More
-              </Link>
-              <Link
-                href="get-started"
-                onClick={handleGetStartedClick}
-                className="px-4 py-2 border border-blue-600 text-blue-600 font-medium rounded-lg hover:bg-blue-50 transition"
-              >
-                Get Started
-              </Link>
-            </div>
-          </div>
-        )} */}
+       
         {/* Stats Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
           {/* System Status Card */}
-          <Card className="relative overflow-hidden group hover:shadow-lg transition-all duration-300">
-            <div className="absolute top-0 left-0 w-1 h-full bg-green-500" />
-            <div className="p-6">
-              <div className="flex items-center gap-3 mb-3">
-                <div className="p-2 bg-green-100 rounded-lg">
-                  <CheckCircle className="w-5 h-5 text-green-600" />
-                </div>
-                <h3 className="font-semibold text-gray-900">System Check</h3>
-              </div>
-              <div className="space-y-2">
-                <div className="flex items-center text-sm text-gray-600">
-                  <CheckCircle className="w-4 h-4 mr-2 text-green-500" />
-                  Camera Access Enabled
-                </div>
-                <div className="flex items-center text-sm text-gray-600">
-                  <CheckCircle className="w-4 h-4 mr-2 text-green-500" />
-                  Microphone Connected
-                </div>
-                <Link
-                  href="#"
-                  className="inline-flex items-center text-sm text-green-600 hover:text-green-700 mt-2"
-                >
-                  Run Full Check <ArrowRight className="w-4 h-4 ml-1" />
-                </Link>
-              </div>
-            </div>
-          </Card>
-
+          <SystemStatusCheck />
           {/* Browser Compatibility */}
-          <Card className="relative overflow-hidden group hover:shadow-lg transition-all duration-300">
-            <div className="absolute top-0 left-0 w-1 h-full bg-blue-500" />
-            <div className="p-6">
-              <div className="flex items-center gap-3 mb-3">
-                <div className="p-2 bg-blue-100 rounded-lg">
-                  <Shield className="w-5 h-5 text-blue-600" />
-                </div>
-                <h3 className="font-semibold text-gray-900">Browser Status</h3>
-              </div>
-              <div className="space-y-2">
-                <p className="text-sm text-gray-600">Chrome 121.0.6167.85</p>
-                <div className="flex items-center text-sm text-gray-600">
-                  <CheckCircle className="w-4 h-4 mr-2 text-green-500" />
-                  Latest Version Detected
-                </div>
-                <Link
-                  href="#"
-                  className="inline-flex items-center text-sm text-blue-600 hover:text-blue-700 mt-2"
-                >
-                  View Requirements <ArrowRight className="w-4 h-4 ml-1" />
-                </Link>
-              </div>
-            </div>
-          </Card>
-
+          <BrowserCompatibilityCheck />
           {/* Connection Status */}
-          <Card className="relative overflow-hidden group hover:shadow-lg transition-all duration-300">
-            <div className="absolute top-0 left-0 w-1 h-full bg-purple-500" />
-            <div className="p-6">
-              <div className="flex items-center gap-3 mb-3">
-                <div className="p-2 bg-purple-100 rounded-lg">
-                  <Wifi className="w-5 h-5 text-purple-600" />
-                </div>
-                <h3 className="font-semibold text-gray-900">Network Check</h3>
-              </div>
-              <div className="space-y-2">
-                <div className="flex items-center text-sm text-gray-600">
-                  <CheckCircle className="w-4 h-4 mr-2 text-green-500" />
-                  Strong Connection
-                </div>
-                <p className="text-sm text-gray-600">Latency: 45ms</p>
-                <Link
-                  href="#"
-                  className="inline-flex items-center text-sm text-purple-600 hover:text-purple-700 mt-2"
-                >
-                  Test Connection <ArrowRight className="w-4 h-4 ml-1" />
-                </Link>
-              </div>
-            </div>
-          </Card>
-
+          <ConnectionStatusCheck />
           {/* Time Status */}
-          <Card className="relative overflow-hidden group hover:shadow-lg transition-all duration-300">
-            <div className="absolute top-0 left-0 w-1 h-full bg-orange-500" />
-            <div className="p-6">
-              <div className="flex items-center gap-3 mb-3">
-                <div className="p-2 bg-orange-100 rounded-lg">
-                  <Clock className="w-5 h-5 text-orange-600" />
-                </div>
-                <h3 className="font-semibold text-gray-900">Time Zone</h3>
-              </div>
-              <div className="space-y-2">
-                <p className="text-sm text-gray-600">Current: Asia/Kolkata</p>
-                <p className="text-sm text-gray-600">
-                  Local Time: {new Date().toLocaleTimeString()}
-                </p>
-                <Link
-                  href="#"
-                  className="inline-flex items-center text-sm text-orange-600 hover:text-orange-700 mt-2"
-                >
-                  Verify Settings <ArrowRight className="w-4 h-4 ml-1" />
-                </Link>
-              </div>
-            </div>
-          </Card>
+          <TimeStatusCheck />
         </div>
 
         {/* Actions Grid */}
@@ -320,7 +201,8 @@ function Dashboard() {
             iconClassName="text-orange-600"
           />
         </div>
-
+ {/* Exam Promo Banner */}
+ <ExamPromoBanner isAdmin={isAdmin}/>
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Recent Activity Section */}
           <div className="lg:col-span-2">
