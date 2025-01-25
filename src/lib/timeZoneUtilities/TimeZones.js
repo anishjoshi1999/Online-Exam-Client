@@ -1,8 +1,25 @@
 const timezones = [
-    "Asia/Kathmandu",
-    "America/New_York",
-    "Europe/London",
-    "Asia/Kolkata",
-    "Australia/Sydney",
-  ];
-  export default timezones;  
+  "Asia/Kathmandu",
+  "Asia/Kolkata",
+  "America/New_York",
+  "America/Chicago",
+  "America/Denver",
+  "America/Los_Angeles",
+  "America/Anchorage",
+  "Pacific/Honolulu",
+  "Europe/London",
+  "Europe/Guernsey",
+  "Europe/Isle_of_Man",
+  "Europe/Jersey",
+  "Australia/Sydney",
+  "Australia/Melbourne",
+  "Australia/Brisbane",
+  "Australia/Adelaide",
+  "Australia/Darwin",
+  "Australia/Perth",
+  "Australia/Hobart",
+  "Australia/Canberra",
+  "Australia/Longreach",
+  "Australia/Broken_Hill",
+];
+export default timezones;
