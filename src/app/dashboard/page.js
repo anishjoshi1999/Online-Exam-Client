@@ -12,6 +12,8 @@ import {
   Lightbulb,
   Target,
   RefreshCw,
+  Monitor,
+  ClipboardList,
 } from "lucide-react";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -131,68 +133,106 @@ function Dashboard() {
           </div>
         </div>
 
-        {/* Stats Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-          {/* System Status Card */}
-          <SystemStatusCheck />
-          {/* Browser Compatibility */}
-          <BrowserCompatibilityCheck />
-          {/* Connection Status */}
-          <ConnectionStatusCheck />
-          {/* Time Status */}
-          <TimeStatusCheck />
-        </div>
+        <div className="space-y-10">
+          {/* Online MCQ Exam Section */}
+          <div>
+            <div className="flex items-center gap-3">
+              {/* Lucide Icon */}
+              <ClipboardList className="w-8 h-8 text-blue-600" />
+              {/* Heading */}
+              <h1 className="text-3xl font-bold text-gray-900">
+                Online MCQ Exam
+              </h1>
+            </div>
+            {/* Subheading */}
+            <p className="text-gray-600 mt-2">
+              Create, manage, and analyze MCQ exams with ease.
+            </p>
+          </div>
 
-        {/* Actions Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-          {isAdmin && (
-            <>
-              <ActionCard
-                icon={PlusCircle}
-                title="Design Your Exam"
-                description="Design and set up new exams with ease"
-                href="/create-exam"
-                className="bg-gradient-to-br from-blue-50 to-blue-100 hover:from-blue-100 hover:to-blue-200"
-                iconClassName="text-blue-600"
-              />
-              <ActionCard
-                icon={BookOpen}
-                title="Organize & Manage"
-                description="Manage exams and track performances"
-                href="/manage-exam"
-                className="bg-gradient-to-br from-green-50 to-green-100 hover:from-green-100 hover:to-green-200"
-                iconClassName="text-green-600"
-              />
-            </>
-          )}
-          <ActionCard
-            icon={PenTool}
-            title="Start Test"
-            description="Begin your scheduled exam session"
-            href="/take-exam"
-            className="bg-gradient-to-br from-purple-50 to-purple-100 hover:from-purple-100 hover:to-purple-200"
-            iconClassName="text-purple-600"
-          />
-          <ActionCard
-            icon={BarChart3}
-            title="Analyze Results"
-            description="Analyze exam results for improvement"
-            href="/view-performance"
-            className="bg-gradient-to-br from-orange-50 to-orange-100 hover:from-orange-100 hover:to-orange-200"
-            iconClassName="text-orange-600"
-          />
-        </div>
-        {/* Exam Promo Banner */}
-        <ExamPromoBanner isAdmin={isAdmin} />
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-          {/* Motivational Quotes Section */}
-          <Card>
-            <CardHeader>
-              <div className="flex items-center justify-between">
-                <CardTitle className="text-xl font-semibold text-gray-800">
-                  Today's Inspiration
-                </CardTitle>
-                {/* <Button
+          {/* Actions Grid */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+            {isAdmin && (
+              <>
+                <ActionCard
+                  icon={PlusCircle}
+                  title="Design Your Exam"
+                  description="Design and set up new exams with ease"
+                  href="/create-exam"
+                  className="bg-gradient-to-br from-blue-50 to-blue-100 hover:from-blue-100 hover:to-blue-200"
+                  iconClassName="text-blue-600"
+                />
+                <ActionCard
+                  icon={BookOpen}
+                  title="Organize & Manage"
+                  description="Manage exams and track performances"
+                  href="/manage-exam"
+                  className="bg-gradient-to-br from-green-50 to-green-100 hover:from-green-100 hover:to-green-200"
+                  iconClassName="text-green-600"
+                />
+              </>
+            )}
+            <ActionCard
+              icon={PenTool}
+              title="Start Test"
+              description="Begin your scheduled exam session"
+              href="/take-exam"
+              className="bg-gradient-to-br from-purple-50 to-purple-100 hover:from-purple-100 hover:to-purple-200"
+              iconClassName="text-purple-600"
+            />
+            <ActionCard
+              icon={BarChart3}
+              title="Analyze Results"
+              description="Analyze exam results for improvement"
+              href="/view-performance"
+              className="bg-gradient-to-br from-orange-50 to-orange-100 hover:from-orange-100 hover:to-orange-200"
+              iconClassName="text-orange-600"
+            />
+          </div>
+
+          {/* System Diagnostics Section */}
+          <div>
+            <div className="flex items-center gap-3">
+              {/* Lucide Icon */}
+              <Monitor className="w-8 h-8 text-blue-600" />
+              {/* Heading */}
+              <h1 className="text-3xl font-bold text-gray-900">
+                System Diagnostics
+              </h1>
+            </div>
+            {/* Subheading */}
+            <p className="text-gray-600 mt-2">
+              Monitor and optimize your computer’s performance with real-time
+              status updates.
+            </p>
+          </div>
+
+          {/* Grid Layout for Cards */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+            {/* System Status Card */}
+            <SystemStatusCheck />
+
+            {/* Browser Compatibility Card */}
+            <BrowserCompatibilityCheck />
+
+            {/* Connection Status Card */}
+            <ConnectionStatusCheck />
+
+            {/* Time Status Card */}
+            <TimeStatusCheck />
+          </div>
+          {/* Exam Promo Banner */}
+          <ExamPromoBanner isAdmin={isAdmin} />
+
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            {/* Motivational Quotes Section */}
+            <Card>
+              <CardHeader>
+                <div className="flex items-center justify-between">
+                  <CardTitle className="text-xl font-semibold text-gray-800">
+                    Today's Inspiration
+                  </CardTitle>
+                  {/* <Button
                   variant="ghost"
                   size="sm"
                   onClick={() => refreshQuotes()}
@@ -200,69 +240,70 @@ function Dashboard() {
                   <RefreshCw className="w-4 h-4 mr-2 text-blue-600" />
                   Refresh
                 </Button> */}
-              </div>
-            </CardHeader>
-            <CardContent className="space-y-6">
-              <Card className="bg-blue-50 border-blue-100">
-                <CardContent className="p-4 flex items-start space-x-3">
-                  <Lightbulb className="w-5 h-5 text-blue-600 flex-shrink-0" />
-                  <p className="text-gray-800 italic">
-                    {`"Education is the passport to the future, for tomorrow belongs to those who prepare for it today." – Malcolm X`}
-                  </p>
-                </CardContent>
-              </Card>
-              <Card className="bg-green-50 border-green-100">
-                <CardContent className="p-4 flex items-start space-x-3">
-                  <BookOpen className="w-5 h-5 text-green-600 flex-shrink-0" />
-                  <p className="text-gray-800 italic">
-                    {`"The roots of education are bitter, but the fruit is sweet." – Aristotle`}
-                  </p>
-                </CardContent>
-              </Card>
-            </CardContent>
-          </Card>
+                </div>
+              </CardHeader>
+              <CardContent className="space-y-6">
+                <Card className="bg-blue-50 border-blue-100">
+                  <CardContent className="p-4 flex items-start space-x-3">
+                    <Lightbulb className="w-5 h-5 text-blue-600 flex-shrink-0" />
+                    <p className="text-gray-800 italic">
+                      {`"Education is the passport to the future, for tomorrow belongs to those who prepare for it today." – Malcolm X`}
+                    </p>
+                  </CardContent>
+                </Card>
+                <Card className="bg-green-50 border-green-100">
+                  <CardContent className="p-4 flex items-start space-x-3">
+                    <BookOpen className="w-5 h-5 text-green-600 flex-shrink-0" />
+                    <p className="text-gray-800 italic">
+                      {`"The roots of education are bitter, but the fruit is sweet." – Aristotle`}
+                    </p>
+                  </CardContent>
+                </Card>
+              </CardContent>
+            </Card>
 
-          {/* Tips for Academic Success Section */}
-          <Card>
-            <CardHeader>
-              <div className="flex items-center justify-between">
-                <CardTitle className="text-xl font-semibold text-gray-800">
-                  Tips for Success
-                </CardTitle>
-                <BookOpen className="w-5 h-5 text-purple-600" />
-              </div>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="flex items-start space-x-3">
-                <Target className="w-5 h-5 text-red-600 flex-shrink-0" />
-                <p className="text-gray-800">
-                  Set clear, achievable goals for each study session to stay
-                  focused and motivated.
-                </p>
-              </div>
-              <div className="flex items-start space-x-3">
-                <Clock className="w-5 h-5 text-yellow-600 flex-shrink-0" />
-                <p className="text-gray-800">
-                  Create a study schedule and stick to it to manage your time
-                  effectively.
-                </p>
-              </div>
-              <div className="flex items-start space-x-3">
-                <BookOpen className="w-5 h-5 text-blue-600 flex-shrink-0" />
-                <p className="text-gray-800">
-                  Review your notes regularly to reinforce learning and improve
-                  retention.
-                </p>
-              </div>
-              <div className="flex items-start space-x-3">
-                <Lightbulb className="w-5 h-5 text-green-600 flex-shrink-0" />
-                <p className="text-gray-800">
-                  Practice past exams to familiarize yourself with the format
-                  and identify areas for improvement.
-                </p>
-              </div>
-            </CardContent>
-          </Card>
+            {/* Tips for Academic Success Section */}
+            <Card>
+              <CardHeader>
+                <div className="flex items-center justify-between">
+                  <CardTitle className="text-xl font-semibold text-gray-800">
+                    Tips for Success
+                  </CardTitle>
+                  <BookOpen className="w-5 h-5 text-purple-600" />
+                </div>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="flex items-start space-x-3">
+                  <Target className="w-5 h-5 text-red-600 flex-shrink-0" />
+                  <p className="text-gray-800">
+                    Set clear, achievable goals for each study session to stay
+                    focused and motivated.
+                  </p>
+                </div>
+                <div className="flex items-start space-x-3">
+                  <Clock className="w-5 h-5 text-yellow-600 flex-shrink-0" />
+                  <p className="text-gray-800">
+                    Create a study schedule and stick to it to manage your time
+                    effectively.
+                  </p>
+                </div>
+                <div className="flex items-start space-x-3">
+                  <BookOpen className="w-5 h-5 text-blue-600 flex-shrink-0" />
+                  <p className="text-gray-800">
+                    Review your notes regularly to reinforce learning and
+                    improve retention.
+                  </p>
+                </div>
+                <div className="flex items-start space-x-3">
+                  <Lightbulb className="w-5 h-5 text-green-600 flex-shrink-0" />
+                  <p className="text-gray-800">
+                    Practice past exams to familiarize yourself with the format
+                    and identify areas for improvement.
+                  </p>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
         </div>
       </div>
     </div>
