@@ -1,3 +1,4 @@
+"use client";
 import React, { useState } from "react";
 import {
   Plus,
@@ -6,6 +7,7 @@ import {
   Calendar,
   CheckSquare,
   Globe,
+  HelpCircle,
 } from "lucide-react";
 import timezones from "@/lib/timeZoneUtilities/TimeZones";
 import moment from "moment-timezone";
@@ -15,6 +17,14 @@ import WYSIWYGOptionEditor from "../WYSIWYG/WYSIWYGOptionEditor";
 import WYSIWYGExplainationEditor from "../WYSIWYG/WYSIWYGExplainationEditor";
 import InputField from "./InputField";
 import Loader from "./Loader";
+import { Button } from "@/components/ui/button"; // shadcn/ui Button
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+} from "@/components/ui/dialog";
 const ExamForm = ({
   examDetails,
   questions,
@@ -51,6 +61,22 @@ const ExamForm = ({
   };
 
   const [showPopup, setShowPopup] = useState(false);
+  const [showModal, setShowModal] = useState(false);
+  const promptText = `Generate a multiple-choice question with the following requirements in KaTeX without rendering, and write the question in a .txt file:
+
+  1. The question should be related to the subject (e.g., Physics).
+  2. Include inline math using $ ... $ delimiters for variables, constants, and short expressions.
+  3. Include display math using $$ ... $$ delimiters for equations or formulas that should be centered on their own line.
+  4. Provide four options (A, B, C, D), with one correct answer.
+  5. Include a step-by-step explanation of the solution, using both inline and display math as needed.
+  .
+  `;
+
+  const handleCopyPrompt = () => {
+    navigator.clipboard.writeText(promptText);
+    alert("Prompt copied to clipboard!");
+  };
+
   const [selectedTimezone, setSelectedTimezone] = useState("Asia/Kathmandu"); // Default timezone
   const togglePopup = () => setShowPopup(!showPopup);
 
@@ -206,15 +232,69 @@ const ExamForm = ({
 
           {/* Questions Section */}
           <div className="space-y-6">
-            <div className="flex justify-between items-center">
-              <h3 className="text-xl font-semibold text-gray-900">Questions</h3>
-              <button
-                onClick={onAddQuestion}
-                className="inline-flex items-center px-4 py-2 bg-green-600 text-white font-semibold rounded-lg hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 transition-all duration-200"
-              >
-                <Plus className="w-5 h-5 mr-2" />
-                Add Question
-              </button>
+            <div>
+              <div className="flex justify-between items-center">
+                <h3 className="text-xl font-semibold text-gray-900">
+                  Questions
+                </h3>
+                <div className="flex gap-4">
+                  <Button
+                    onClick={onAddQuestion}
+                    className="inline-flex items-center bg-green-600 hover:bg-green-700"
+                  >
+                    <Plus className="w-5 h-5 mr-2" />
+                    Add Question
+                  </Button>
+                  <Button
+                    onClick={() => setShowModal(true)}
+                    className="inline-flex items-center bg-yellow-600 hover:bg-yellow-700"
+                  >
+                    <HelpCircle className="w-5 h-5 mr-2" />
+                    Learn How to Add Equations
+                  </Button>
+                </div>
+              </div>
+
+              {/* shadcn/ui Dialog (Modal) */}
+              <Dialog open={showModal} onOpenChange={setShowModal}>
+                <DialogContent className="sm:max-w-3xl">
+                  <DialogHeader>
+                    <DialogTitle>Add Equations</DialogTitle>
+                    <DialogDescription>
+                      Copy and paste the following prompt into ChatGPT,
+                      DeepSeek, or any LLM chat website to generate equations
+                      and questions.
+                    </DialogDescription>
+                  </DialogHeader>
+                  <pre className="bg-gray-100 p-4 rounded-md whitespace-pre-wrap text-sm">
+                    {promptText}
+                  </pre>
+                  <DialogHeader>
+                    <DialogTitle>Note</DialogTitle>
+                    <DialogDescription>
+                      {`From the generated response, try copying and pasting the
+                      equation into the text editor. Remember, for the equation
+                      to render in the WYSIWYG editor, ensure there is no space
+                      between the $ symbols and the equation. For example, use
+                      $2x + 5 = 15$ instead of $ 2x + 5 = 15 $.`}
+                    </DialogDescription>
+                  </DialogHeader>
+                  <div className="flex justify-end gap-4">
+                    <Button
+                      onClick={handleCopyPrompt}
+                      className="bg-blue-500 hover:bg-blue-600"
+                    >
+                      Copy Prompt
+                    </Button>
+                    <Button
+                      onClick={() => setShowModal(false)}
+                      className="bg-gray-500 hover:bg-gray-600"
+                    >
+                      Close
+                    </Button>
+                  </div>
+                </DialogContent>
+              </Dialog>
             </div>
             {questions.map((question, index) => (
               <div

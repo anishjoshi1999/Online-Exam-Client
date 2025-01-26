@@ -15,11 +15,15 @@ const WYSIWYGEditor = ({ index, question, onQuestionChange }) => {
       Blockquote,
       Image,
       Placeholder.configure({
-        placeholder:"Start typing your question here...",
+        placeholder: "Start typing your question here...",
         emptyNodeClass:
-          'first:before:text-gray-400 first:before:float-left first:before:content-[attr(data-placeholder)] first:before:pointer-events-none',
+          "first:before:text-gray-400 first:before:float-left first:before:content-[attr(data-placeholder)] first:before:pointer-events-none",
       }),
-      MathExtension.configure({ evaluation: false, katexOptions: { macros: { "\\B": "\\mathbb{B}" } }, delimiters: "dollar" }),
+      MathExtension.configure({
+        evaluation: false,
+        katexOptions: { macros: { "\\B": "\\mathbb{B}" } },
+        delimiters: "dollar",
+      }),
     ],
     content: typeof window !== "undefined" ? question.question : "", // Ensure content is loaded only on the client
     editorProps: {
