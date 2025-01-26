@@ -22,6 +22,7 @@ import {
   Home,
   ChevronUp,
   X,
+  Clock
 } from "lucide-react";
 // import saveProgress from "@/lib/TakeExamMethods/saveProgress";
 
@@ -357,27 +358,42 @@ function Page() {
                   </div>
                 </div>
               ) : (
-                // Results Section
-                <div className="space-y-6">
-                  {/* Score Overview */}
-                  <div className="bg-white rounded-lg shadow-md p-6">
-                    <div className="text-center">
-                      <h2 className="text-3xl font-bold text-gray-900">
-                        Your Score: {score} / {examData.totalMarks}
-                      </h2>
-                      <p className="text-gray-600 mt-2">
-                        Time Taken: {Math.floor(timeTaken / 60)}m{" "}
-                        {timeTaken % 60}s
-                      </p>
-                    </div>
-                  </div>
+<>
+  {examData.showResult ? (
+    <div className="space-y-6">
+      {/* Score Overview */}
+      <div className="bg-white rounded-lg shadow-md p-6">
+        <div className="text-center">
+          <h2 className="text-3xl font-bold text-gray-900">
+            Your Score: {score} / {examData.totalMarks}
+          </h2>
+          <p className="text-gray-600 mt-2">
+            Time Taken: {Math.floor(timeTaken / 60)}m{" "}
+            {timeTaken % 60}s
+          </p>
+        </div>
+      </div>
 
-                  {/* Detailed Results */}
-                  <DetailedResults
-                    results={examData.results}
-                    answers={answers}
-                  />
-                </div>
+      {/* Detailed Results */}
+      <DetailedResults
+        results={examData.results}
+        answers={answers}
+      />
+    </div>
+  ) : (
+    <div className="bg-white rounded-lg shadow-md p-8 text-center">
+      <div className="flex justify-center mb-4">
+        <Clock className="w-12 h-12 text-gray-400" /> {/* Lucide Clock Icon */}
+      </div>
+      <h2 className="text-2xl font-bold text-gray-900 mb-3">
+        Results Are Being Processed
+      </h2>
+      <p className="text-gray-600 max-w-md mx-auto">
+        Your results are currently being reviewed and will be available within the next 12 hours. Thank you for your patience!
+      </p>
+    </div>
+  )}
+</>
               )}
             </div>
           )}

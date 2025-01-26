@@ -28,6 +28,7 @@ function Page({ params }) {
     passMarks: "",
     timezone: "",
     questions: [],
+    showResult: false,
   });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -73,6 +74,7 @@ function Page({ params }) {
           passMarks: exam.passMarks,
           questions: exam.questions,
           timezone: exam.timezone,
+          showResult: exam.showResult,
         });
       } catch (err) {
         console.error("Error fetching exam details:", err);

@@ -18,7 +18,10 @@ function InviteParticipantPage({ params }) {
     { label: "Dashboard", href: "/dashboard" },
     { label: "Manage Exam", href: "/manage-exam" },
     { label: `${slug}`, href: `/manage-exam/${slug}/invite-participant` },
-    { label: "Invite Participant", href: `/manage-exam/${slug}/invite-participant` },
+    {
+      label: "Invite Participant",
+      href: `/manage-exam/${slug}/invite-participant`,
+    },
   ];
 
   useEffect(() => {
@@ -100,7 +103,7 @@ function InviteParticipantPage({ params }) {
             "Content-Type": "application/json",
             Authorization: `Bearer ${token}`,
           },
-          body: JSON.stringify({ email: participantEmail }),
+          body: JSON.stringify({ email: participantEmail, slug }),
         }
       );
 
@@ -143,7 +146,8 @@ function InviteParticipantPage({ params }) {
       } else {
         const errorData = await response.json();
         toast.error(
-          errorData.message || `Failed to send invitation to ${participantEmail}.`
+          errorData.message ||
+            `Failed to send invitation to ${participantEmail}.`
         );
       }
     } catch (error) {
@@ -194,7 +198,7 @@ function InviteParticipantPage({ params }) {
           <div className="mt-16">
             <Breadcrumbs items={breadcrumbItems} />
           </div>
-          
+
           <div className="mt-8">
             <div className="bg-white rounded-xl shadow-lg border border-gray-100 overflow-hidden">
               {/* Header */}
@@ -258,7 +262,7 @@ function InviteParticipantPage({ params }) {
                       </button>
                     )}
                   </div>
-                  
+
                   <div className="border rounded-lg overflow-hidden">
                     {participants.length === 0 ? (
                       <div className="p-8 text-center text-gray-500">
@@ -279,7 +283,9 @@ function InviteParticipantPage({ params }) {
                             </div>
                             <div className="flex items-center gap-3">
                               <button
-                                onClick={() => handleSendEmail(participant.email)}
+                                onClick={() =>
+                                  handleSendEmail(participant.email)
+                                }
                                 disabled={loading}
                                 className="inline-flex items-center px-3 py-1 text-sm font-medium text-green-600 hover:text-green-700 disabled:opacity-50 disabled:cursor-not-allowed"
                               >
@@ -287,7 +293,9 @@ function InviteParticipantPage({ params }) {
                                 Send Invite
                               </button>
                               <button
-                                onClick={() => handleRemoveParticipant(participant.email)}
+                                onClick={() =>
+                                  handleRemoveParticipant(participant.email)
+                                }
                                 disabled={loading}
                                 className="inline-flex items-center px-3 py-1 text-sm font-medium text-red-600 hover:text-red-700 disabled:opacity-50 disabled:cursor-not-allowed"
                               >

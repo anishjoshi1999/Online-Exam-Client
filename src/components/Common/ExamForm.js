@@ -172,6 +172,34 @@ const ExamForm = ({
                   onChange={onExamDetailsChange}
                   placeholder="Enter pass marks"
                 />
+                {/* Show Result CheckBox */}
+
+                <div className="space-y-2">
+                  <div className="flex items-center space-x-3">
+                    <FileText className="w-5 h-5 text-gray-500" />
+                    <label
+                      htmlFor="showResult"
+                      className="text-gray-700 font-medium"
+                    >
+                      Show Result Immediately After Submission
+                    </label>
+                    <input
+                      id="showResult"
+                      type="checkbox"
+                      name="showResult"
+                      checked={examDetails.showResult}
+                      onChange={(e) =>
+                        onExamDetailsChange({
+                          target: {
+                            name: e.target.name,
+                            value: e.target.checked,
+                          },
+                        })
+                      }
+                      className="h-5 w-5 text-blue-600 border-gray-300 rounded focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
+                    />
+                  </div>
+                </div>
               </div>
             </div>
           </div>
