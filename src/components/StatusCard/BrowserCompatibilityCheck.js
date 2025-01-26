@@ -11,7 +11,15 @@ export default function BrowserCompatibilityCheck() {
     version: "",
     ip: "Fetching...",
   });
-  const [loading, setLoading] = useState(true); // Add loading state
+  const [loading, setLoading] = useState(false);
+
+  // Load saved browser info from localStorage on component mount
+  useEffect(() => {
+    const savedBrowserInfo = localStorage.getItem("browserInfo");
+    if (savedBrowserInfo) {
+      setBrowserInfo(JSON.parse(savedBrowserInfo));
+    }
+  }, []);
 
   // Detect browser type and version
   const detectBrowser = () => {
@@ -56,15 +64,18 @@ export default function BrowserCompatibilityCheck() {
       setBrowserInfo((prev) => ({ ...prev, ip: data.ip }));
     } catch (error) {
       setBrowserInfo((prev) => ({ ...prev, ip: "Unable to fetch IP" }));
-    } finally {
-      setLoading(false); // Set loading to false after fetching data
     }
   };
 
-  useEffect(() => {
+  const runFullCheck = async () => {
+    setLoading(true);
     detectBrowser();
-    fetchIPAddress();
-  }, []);
+    await fetchIPAddress();
+    setLoading(false);
+
+    // Save browser info to localStorage
+    localStorage.setItem("browserInfo", JSON.stringify(browserInfo));
+  };
 
   return (
     <Card className="relative overflow-hidden group hover:shadow-lg transition-all duration-300">
@@ -101,9 +112,7 @@ export default function BrowserCompatibilityCheck() {
             className="inline-flex items-center text-sm text-blue-600 hover:text-blue-700 mt-2"
             onClick={(e) => {
               e.preventDefault();
-              setLoading(true); // Show loader when re-checking
-              detectBrowser();
-              fetchIPAddress();
+              runFullCheck();
             }}
           >
             {loading ? (

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { CheckCircle, ArrowRight, Wifi, Loader } from 'lucide-react';
 import { Card } from '@/components/ui/card';
 import Link from 'next/link';
@@ -7,9 +7,21 @@ import SpeedTest from '@cloudflare/speedtest';
 function ConnectionStatusCheck() {
   const [isTesting, setIsTesting] = useState(false);
   const [latency, setLatency] = useState(0); // Default latency
-  const [downloadSpeed, setDownloadSpeed] = useState(0);
-  const [uploadSpeed, setUploadSpeed] = useState(0);
-  const [connectionStatus, setConnectionStatus] = useState('Strong Connection');
+  const [downloadSpeed, setDownloadSpeed] = useState(0); // Default download speed
+  const [uploadSpeed, setUploadSpeed] = useState(0); // Default upload speed
+  const [connectionStatus, setConnectionStatus] = useState('Strong Connection'); // Default status
+
+  // Load saved network status from localStorage on component mount
+  useEffect(() => {
+    const savedNetworkStatus = localStorage.getItem("networkStatus");
+    if (savedNetworkStatus) {
+      const { latency, downloadSpeed, uploadSpeed, connectionStatus } = JSON.parse(savedNetworkStatus);
+      setLatency(latency);
+      setDownloadSpeed(downloadSpeed);
+      setUploadSpeed(uploadSpeed);
+      setConnectionStatus(connectionStatus);
+    }
+  }, []);
 
   const handleSpeedTest = async () => {
     setIsTesting(true);
@@ -27,17 +39,45 @@ function ConnectionStatusCheck() {
     speedTest.onFinish = (results) => {
       const summary = results.getSummary();
       console.log(summary); // Debugging: Log the summary object
-      setLatency(summary.latency); // Use summary.latency instead of summary.unloadedLatency
-      setDownloadSpeed(summary.download / 1e6); // Convert download speed to Mbps
-      setUploadSpeed(summary.upload / 1e6); // Convert upload speed to Mbps
-      setConnectionStatus('Strong Connection');
+      const newLatency = summary.latency; // Use summary.latency instead of summary.unloadedLatency
+      const newDownloadSpeed = summary.download / 1e6; // Convert download speed to Mbps
+      const newUploadSpeed = summary.upload / 1e6; // Convert upload speed to Mbps
+      const newConnectionStatus = 'Strong Connection';
+
+      // Update state
+      setLatency(newLatency);
+      setDownloadSpeed(newDownloadSpeed);
+      setUploadSpeed(newUploadSpeed);
+      setConnectionStatus(newConnectionStatus);
       setIsTesting(false);
+
+      // Save to localStorage
+      localStorage.setItem(
+        "networkStatus",
+        JSON.stringify({
+          latency: newLatency,
+          downloadSpeed: newDownloadSpeed,
+          uploadSpeed: newUploadSpeed,
+          connectionStatus: newConnectionStatus,
+        })
+      );
     };
 
     speedTest.onError = (error) => {
       console.error('Error:', error);
       setConnectionStatus('Test Failed');
       setIsTesting(false);
+
+      // Save failed status to localStorage
+      localStorage.setItem(
+        "networkStatus",
+        JSON.stringify({
+          latency: 0,
+          downloadSpeed: 0,
+          uploadSpeed: 0,
+          connectionStatus: 'Test Failed',
+        })
+      );
     };
 
     speedTest.play(); // Start the test
@@ -61,12 +101,6 @@ function ConnectionStatusCheck() {
           <p className="text-sm text-gray-600">Latency: {latency.toFixed(2)}ms</p>
           <p className="text-sm text-gray-600">Download: {downloadSpeed.toFixed(2)} Mbps</p>
           <p className="text-sm text-gray-600">Upload: {uploadSpeed.toFixed(2)} Mbps</p>
-          {/* {downloadSpeed && (
-            <p className="text-sm text-gray-600">Download: {downloadSpeed.toFixed(2)} Mbps</p>
-          )}
-          {uploadSpeed && (
-            <p className="text-sm text-gray-600">Upload: {uploadSpeed.toFixed(2)} Mbps</p>
-          )} */}
           <Link
             href="#"
             className="inline-flex items-center text-sm text-purple-600 hover:text-purple-700 mt-2"

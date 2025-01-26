@@ -3,13 +3,27 @@
 import { useState, useEffect } from "react";
 import { CheckCircle, ArrowRight, AlertTriangle, Loader2 } from "lucide-react";
 import { Card } from "@/components/ui/card";
-import { generate} from "random-words";
+import { generate } from "random-words";
+
 export default function SystemStatusCheck() {
   const [cameraStatus, setCameraStatus] = useState(null);
   const [microphoneStatus, setMicrophoneStatus] = useState(null);
   const [keywordStatus, setKeywordStatus] = useState(null);
   const [mouseStatus, setMouseStatus] = useState(null);
   const [loading, setLoading] = useState(false);
+
+  // Load saved status from localStorage on component mount
+  useEffect(() => {
+    const savedCameraStatus = localStorage.getItem("cameraStatus");
+    const savedMicrophoneStatus = localStorage.getItem("microphoneStatus");
+    const savedKeywordStatus = localStorage.getItem("keywordStatus");
+    const savedMouseStatus = localStorage.getItem("mouseStatus");
+
+    if (savedCameraStatus !== null) setCameraStatus(savedCameraStatus === "true");
+    if (savedMicrophoneStatus !== null) setMicrophoneStatus(savedMicrophoneStatus === "true");
+    if (savedKeywordStatus !== null) setKeywordStatus(savedKeywordStatus === "true");
+    if (savedMouseStatus !== null) setMouseStatus(savedMouseStatus === "true");
+  }, []);
 
   const checkSystemStatus = async () => {
     setLoading(true);
@@ -18,31 +32,39 @@ export default function SystemStatusCheck() {
     try {
       const stream = await navigator.mediaDevices.getUserMedia({ video: true });
       setCameraStatus(true);
+      localStorage.setItem("cameraStatus", "true"); // Save to localStorage
       stream.getTracks().forEach((track) => track.stop());
     } catch (error) {
       setCameraStatus(false);
+      localStorage.setItem("cameraStatus", "false"); // Save to localStorage
     }
 
     // Microphone check
     try {
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
       setMicrophoneStatus(true);
+      localStorage.setItem("microphoneStatus", "true"); // Save to localStorage
       stream.getTracks().forEach((track) => track.stop());
     } catch (error) {
       setMicrophoneStatus(false);
+      localStorage.setItem("microphoneStatus", "false"); // Save to localStorage
     }
-    let randomWord = generate({ minLength: 5, maxLength: 13 });  
-    // Keyword check
+
+    // Keyboard check
+    const randomWord = generate({ minLength: 5, maxLength: 13 });
     const keyword = prompt(`Please type the keyword '${randomWord}' to verify your keyboard:`);
     if (keyword === randomWord) {
       setKeywordStatus(true);
+      localStorage.setItem("keywordStatus", "true"); // Save to localStorage
     } else {
       setKeywordStatus(false);
+      localStorage.setItem("keywordStatus", "false"); // Save to localStorage
     }
 
     // Mouse check
     const mouseCheck = confirm("Please move your mouse and click OK to verify your mouse:");
     setMouseStatus(mouseCheck);
+    localStorage.setItem("mouseStatus", mouseCheck ? "true" : "false"); // Save to localStorage
 
     setLoading(false);
   };

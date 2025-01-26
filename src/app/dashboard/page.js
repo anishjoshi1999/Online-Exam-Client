@@ -1,6 +1,5 @@
 "use client";
 import React, { useState, useEffect } from "react";
-import Link from "next/link";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import {
@@ -8,17 +7,15 @@ import {
   PenTool,
   BarChart3,
   Clock,
-  CheckCircle,
   Bell,
   PlusCircle,
-  Gift,
-  Shield,
-  Wifi,
-  ArrowRight,
+  Lightbulb,
+  Target,
+  RefreshCw,
 } from "lucide-react";
-import { Card } from "@/components/ui/card";
+import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 import jwt from "jsonwebtoken";
-import ActivityItem from "@/components/Dashboard/ActivityItem";
 import ActionCard from "@/components/Dashboard/ActionCard";
 import Navbar from "@/components/Navbar/Navbar";
 import Loader from "@/components/Common/Loader";
@@ -30,15 +27,7 @@ import ConnectionStatusCheck from "@/components/StatusCard/ConnectionStatusCheck
 import TimeStatusCheck from "@/components/StatusCard/TimeStatusCheck";
 import BrowserCompatibilityCheck from "@/components/StatusCard/BrowserCompatibilityCheck";
 import ExamPromoBanner from "@/components/Dashboard/ExamPromoBanner";
-// Function to track events using Google Analytics
-function trackEvent(action, category, label) {
-  if (typeof window !== "undefined" && window.gtag) {
-    window.gtag("event", action, {
-      event_category: category,
-      event_label: label,
-    });
-  }
-}
+
 function Dashboard() {
   const [userName, setUserName] = useState("User");
   const [isAdmin, setAdmin] = useState(false);
@@ -46,15 +35,7 @@ function Dashboard() {
   const [notifications, setNotifications] = useState([]);
   const [loading, setLoading] = useState(true);
   const [notificationLoading, setNotificationLoading] = useState(false);
-  // Track Learn More button click
-  const handleLearnMoreClick = () => {
-    trackEvent("click", "NonAdmin_Engagement", "Learn_More");
-  };
 
-  // Track Get Started button click
-  const handleGetStartedClick = () => {
-    trackEvent("click", "NonAdmin_Engagement", "Get_Started");
-  };
   useEffect(() => {
     const fetchData = async () => {
       const token = await renewAccessToken();
@@ -149,7 +130,7 @@ function Dashboard() {
             </div>
           </div>
         </div>
-       
+
         {/* Stats Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
           {/* System Status Card */}
@@ -195,78 +176,93 @@ function Dashboard() {
           <ActionCard
             icon={BarChart3}
             title="Analyze Results"
-            description="Track and analyze exam results"
+            description="Analyze exam results for improvement"
             href="/view-performance"
             className="bg-gradient-to-br from-orange-50 to-orange-100 hover:from-orange-100 hover:to-orange-200"
             iconClassName="text-orange-600"
           />
         </div>
- {/* Exam Promo Banner */}
- <ExamPromoBanner isAdmin={isAdmin}/>
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          {/* Recent Activity Section */}
-          <div className="lg:col-span-2">
-            <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
-              <div className="flex items-center justify-between mb-6">
-                <h2 className="text-xl font-semibold text-gray-800">
-                  Recent Activity
-                </h2>
-                <Link
-                  href="/all-activity"
-                  className="text-blue-600 hover:text-blue-700 text-sm font-medium"
+        {/* Exam Promo Banner */}
+        <ExamPromoBanner isAdmin={isAdmin} />
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+          {/* Motivational Quotes Section */}
+          <Card>
+            <CardHeader>
+              <div className="flex items-center justify-between">
+                <CardTitle className="text-xl font-semibold text-gray-800">
+                  Today's Inspiration
+                </CardTitle>
+                {/* <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => refreshQuotes()}
                 >
-                  View All
-                </Link>
+                  <RefreshCw className="w-4 h-4 mr-2 text-blue-600" />
+                  Refresh
+                </Button> */}
               </div>
-              <div className="space-y-2">
-                <ActivityItem
-                  title="Mathematics Final Exam Created"
-                  time="2 hours ago"
-                  type="exam"
-                  href="/exam/1"
-                />
-                <ActivityItem
-                  title="New Student Submissions"
-                  time="4 hours ago"
-                  type="alert"
-                  href="/submissions"
-                />
-                <ActivityItem
-                  title="Physics Quiz Completed"
-                  time="6 hours ago"
-                  type="success"
-                  href="/exam/2"
-                />
-              </div>
-            </div>
-          </div>
+            </CardHeader>
+            <CardContent className="space-y-6">
+              <Card className="bg-blue-50 border-blue-100">
+                <CardContent className="p-4 flex items-start space-x-3">
+                  <Lightbulb className="w-5 h-5 text-blue-600 flex-shrink-0" />
+                  <p className="text-gray-800 italic">
+                    {`"Education is the passport to the future, for tomorrow belongs to those who prepare for it today." – Malcolm X`}
+                  </p>
+                </CardContent>
+              </Card>
+              <Card className="bg-green-50 border-green-100">
+                <CardContent className="p-4 flex items-start space-x-3">
+                  <BookOpen className="w-5 h-5 text-green-600 flex-shrink-0" />
+                  <p className="text-gray-800 italic">
+                    {`"The roots of education are bitter, but the fruit is sweet." – Aristotle`}
+                  </p>
+                </CardContent>
+              </Card>
+            </CardContent>
+          </Card>
 
-          {/* Quick Tips Section */}
-          <div className="lg:col-span-1">
-            <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
-              <div className="flex items-center justify-between mb-6">
-                <h2 className="text-xl font-semibold text-gray-800">
-                  Quick Tips
-                </h2>
-                <Gift className="w-5 h-5 text-blue-600" />
+          {/* Tips for Academic Success Section */}
+          <Card>
+            <CardHeader>
+              <div className="flex items-center justify-between">
+                <CardTitle className="text-xl font-semibold text-gray-800">
+                  Tips for Success
+                </CardTitle>
+                <BookOpen className="w-5 h-5 text-purple-600" />
               </div>
-              <div className="space-y-4">
-                {[
-                  "Receive an email for the live mock test",
-                  "Click on the link in the email to start the exam",
-                  "Submit the exam to receive results along with marks",
-                  "View your rank after submission",
-                ].map((tip, index) => (
-                  <div key={index} className="flex items-start space-x-3 group">
-                    <div className="w-2 h-2 bg-blue-600 rounded-full mt-2 group-hover:scale-125 transition-transform duration-200" />
-                    <p className="text-gray-600 group-hover:text-gray-900 transition-colors duration-200">
-                      {tip}
-                    </p>
-                  </div>
-                ))}
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="flex items-start space-x-3">
+                <Target className="w-5 h-5 text-red-600 flex-shrink-0" />
+                <p className="text-gray-800">
+                  Set clear, achievable goals for each study session to stay
+                  focused and motivated.
+                </p>
               </div>
-            </div>
-          </div>
+              <div className="flex items-start space-x-3">
+                <Clock className="w-5 h-5 text-yellow-600 flex-shrink-0" />
+                <p className="text-gray-800">
+                  Create a study schedule and stick to it to manage your time
+                  effectively.
+                </p>
+              </div>
+              <div className="flex items-start space-x-3">
+                <BookOpen className="w-5 h-5 text-blue-600 flex-shrink-0" />
+                <p className="text-gray-800">
+                  Review your notes regularly to reinforce learning and improve
+                  retention.
+                </p>
+              </div>
+              <div className="flex items-start space-x-3">
+                <Lightbulb className="w-5 h-5 text-green-600 flex-shrink-0" />
+                <p className="text-gray-800">
+                  Practice past exams to familiarize yourself with the format
+                  and identify areas for improvement.
+                </p>
+              </div>
+            </CardContent>
+          </Card>
         </div>
       </div>
     </div>

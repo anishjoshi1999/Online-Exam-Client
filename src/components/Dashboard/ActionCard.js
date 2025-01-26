@@ -1,8 +1,15 @@
 import React from "react";
 import Link from "next/link";
 import { ChevronRight } from "lucide-react";
+import { Card } from "@/components/ui/card"; // Assuming you have a Card component from shadcn
 
-function ActionCard({ icon: Icon, title, description, href, disabled = false }) {
+function ActionCard({
+  icon: Icon,
+  title,
+  description,
+  href,
+  disabled = false,
+}) {
   const Wrapper = disabled ? "div" : Link;
 
   return (
@@ -10,8 +17,8 @@ function ActionCard({ icon: Icon, title, description, href, disabled = false }) 
       href={href}
       className={`group ${disabled ? "cursor-not-allowed opacity-50" : ""}`}
     >
-      <div
-        className={`bg-white p-6 rounded-xl shadow-sm border border-gray-100 ${
+      <Card
+        className={`p-6 rounded-xl shadow-sm border border-blue-500 ${
           disabled
             ? ""
             : "hover:shadow-md transition-all duration-300 group-hover:border-blue-100"
@@ -25,7 +32,11 @@ function ActionCard({ icon: Icon, title, description, href, disabled = false }) 
                 : "group-hover:bg-blue-100 transition-colors duration-300"
             }`}
           >
-            <Icon className={`w-6 h-6 ${disabled ? "text-gray-400" : "text-blue-600"}`} />
+            <Icon
+              className={`w-6 h-6 ${
+                disabled ? "text-gray-400" : "text-blue-600"
+              }`}
+            />
           </div>
           {!disabled && (
             <ChevronRight className="w-5 h-5 text-gray-400 group-hover:text-blue-500 transform group-hover:translate-x-1 transition-all duration-300" />
@@ -40,10 +51,12 @@ function ActionCard({ icon: Icon, title, description, href, disabled = false }) 
         >
           {title}
         </h3>
-        <p className={`text-sm ${disabled ? "text-gray-400" : "text-gray-600"}`}>
+        <p
+          className={`text-sm ${disabled ? "text-gray-400" : "text-gray-600"}`}
+        >
           {description}
         </p>
-      </div>
+      </Card>
     </Wrapper>
   );
 }
