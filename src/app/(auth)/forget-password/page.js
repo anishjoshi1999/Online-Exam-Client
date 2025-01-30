@@ -1,45 +1,90 @@
-"use client";
-import { useState } from "react";
-import useForm from "@/components/Auth/useForm";
-import InputField from "@/components/Auth/InputField";
-import AuthForm from "@/components/Auth/AuthForm";
+"use client"
+import React, { useState } from 'react';
 import { useRouter } from "next/navigation";
-import { Mail, Lock } from "lucide-react";
-import { ToastContainer, toast } from "react-toastify";
+import { Mail, Lock, Loader2, Shield, AlertCircle, KeyRound, ArrowLeft } from "lucide-react";
+import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
-export default function ForgotPassword() {
-  const [step, setStep] = useState(1);
-  const { values, error, setError, loading, setLoading, handleChange } =
-    useForm({
-      email: "",
-      token: "",
-      newPassword: "",
-      confirmPassword: "",
-    });
-  const router = useRouter();
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import { ToastContainer } from "react-toastify";
 
-  const validatePassword = (password) => {
-    const passwordRegex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*])/;
-    if (password.length < 8) {
-      return "Password must be at least 8 characters long";
+const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+const PASSWORD_REGEX = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*]).{8,}$/;
+
+export default function ForgotPassword() {
+  const router = useRouter();
+  const [step, setStep] = useState(1);
+  const [loading, setLoading] = useState(false);
+  const [errors, setErrors] = useState({});
+  const [values, setValues] = useState({
+    email: "",
+    token: "",
+    newPassword: "",
+    confirmPassword: "",
+  });
+
+  const validateField = (name, value) => {
+    switch (name) {
+      case 'email':
+        return !EMAIL_REGEX.test(value) ? 'Please enter a valid email address' : '';
+      case 'token':
+        return !value ? 'Reset token is required' : '';
+      case 'newPassword':
+        return !PASSWORD_REGEX.test(value) 
+          ? 'Password must meet all requirements' : '';
+      case 'confirmPassword':
+        return value !== values.newPassword ? 'Passwords do not match' : '';
+      default:
+        return '';
     }
-    if (!passwordRegex.test(password)) {
-      return "Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character (!@#$%^&*)";
-    }
-    return null;
+  };
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    
+    setValues(prev => ({
+      ...prev,
+      [name]: value
+    }));
+
+    setErrors(prev => ({
+      ...prev,
+      [name]: validateField(name, value)
+    }));
+  };
+
+  const validateForm = () => {
+    const newErrors = {};
+    const fieldsToValidate = step === 1 ? ['email'] : ['token', 'newPassword', 'confirmPassword'];
+    
+    fieldsToValidate.forEach(key => {
+      const error = validateField(key, values[key]);
+      if (error) newErrors[key] = error;
+    });
+    
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
   };
 
   const handleRequestReset = async (e) => {
     e.preventDefault();
-    setError("");
-    setLoading(true);
-
-    if (!values.email) {
-      setError("Please enter your email address");
-      setLoading(false);
+    if (!validateForm()) {
+      toast.error("Please correct the errors before submitting");
       return;
     }
+
+    setLoading(true);
 
     try {
       const res = await fetch(
@@ -47,9 +92,7 @@ export default function ForgotPassword() {
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            email: values.email,
-          }),
+          body: JSON.stringify({ email: values.email }),
         }
       );
 
@@ -59,10 +102,10 @@ export default function ForgotPassword() {
         toast.success("Reset token sent to your email");
         setStep(2);
       } else {
-        toast.error(data.message || "Failed to process request");
+        toast.error(data.message || "Failed to send reset token");
       }
     } catch (error) {
-      toast.error("An error occurred. Please try again later.");
+      toast.error("Connection error. Please try again later.");
     } finally {
       setLoading(false);
     }
@@ -70,27 +113,12 @@ export default function ForgotPassword() {
 
   const handleResetPassword = async (e) => {
     e.preventDefault();
-    setError("");
+    if (!validateForm()) {
+      toast.error("Please correct the errors before submitting");
+      return;
+    }
+
     setLoading(true);
-
-    if (!values.token) {
-      setError("Please enter the reset token");
-      setLoading(false);
-      return;
-    }
-
-    const passwordError = validatePassword(values.newPassword);
-    if (passwordError) {
-      setError(passwordError);
-      setLoading(false);
-      return;
-    }
-
-    if (values.newPassword !== values.confirmPassword) {
-      setError("Passwords do not match");
-      setLoading(false);
-      return;
-    }
 
     try {
       const res = await fetch(
@@ -109,122 +137,143 @@ export default function ForgotPassword() {
 
       if (res.ok) {
         toast.success("Password reset successful");
-        setTimeout(() => {
-          router.push("/login");
-        }, 2000);
+        setTimeout(() => router.push("/login"), 2000);
       } else {
         toast.error(data.message || "Failed to reset password");
       }
     } catch (error) {
-      toast.error("An error occurred. Please try again later.");
+      toast.error("Connection error. Please try again later.");
     } finally {
       setLoading(false);
     }
   };
 
-  const handleLoginClick = () => {
-    router.push("/login");
-  };
+  const renderInput = ({ id, label, icon: Icon, type = "text", placeholder }) => (
+    <div className="space-y-2">
+      <Label htmlFor={id} className="text-gray-700 font-medium">
+        {label}
+      </Label>
+      <div className="relative">
+        {Icon && <Icon className="absolute left-3 top-3 h-4 w-4 text-blue-600" />}
+        <Input
+          id={id}
+          name={id}
+          type={type}
+          placeholder={placeholder}
+          className={`${Icon ? 'pl-9' : 'pl-3'} border-gray-200 focus:border-blue-600 focus:ring-blue-600 ${
+            errors[id] ? 'border-red-500' : ''
+          }`}
+          value={values[id]}
+          onChange={handleChange}
+        />
+        {errors[id] && (
+          <div className="flex items-center mt-1 text-sm text-red-500">
+            <AlertCircle className="h-4 w-4 mr-1" />
+            {errors[id]}
+          </div>
+        )}
+      </div>
+    </div>
+  );
 
   return (
-    <>
-      <ToastContainer
-        position="top-right"
-        autoClose={5000}
-        hideProgressBar={false}
-      />
-      {step === 1 ? (
-        <AuthForm
-          title="Forgot Password"
-          subtitle="Enter your email to receive a reset token"
-          buttonText="Send Reset Token"
-          loading={loading}
-          error={error}
-          onSubmit={handleRequestReset}
-          fields={
-            <InputField
-              label="Email"
-              id="email"
-              type="email"
-              value={values.email || ""}
-              onChange={handleChange}
-              placeholder="Enter your email address"
-              icon={<Mail />}
-            />
-          }
-        >
-          <div className="flex justify-center mt-4">
-            <button
-              type="button"
-              className="text-sm text-blue-500 hover:underline"
-              onClick={handleLoginClick}
-            >
-              Back to Login
-            </button>
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-b from-blue-50 to-white p-4">
+      <ToastContainer position="top-right" autoClose={5000} />
+
+      <Card className="w-full max-w-xl shadow-lg">
+        <CardHeader className="space-y-1 pb-8">
+          <div className="flex justify-center mb-6">
+            <div className="bg-blue-600 p-3 rounded-full">
+              <KeyRound className="h-6 w-6 text-white" />
+            </div>
           </div>
-        </AuthForm>
-      ) : (
-        <AuthForm
-          title="Reset Password"
-          subtitle="Enter the reset token and your new password"
-          buttonText="Reset Password"
-          loading={loading}
-          error={error}
-          onSubmit={handleResetPassword}
-          fields={
-            <>
-              <div className="relative">
-                <InputField
-                  label="Reset Token"
-                  id="token"
-                  type="text"
-                  value={values.token || ""}
-                  onChange={handleChange}
-                  placeholder="Enter your reset token"
-                />
-              </div>
-              <InputField
-                label="New Password"
-                id="newPassword"
-                type="password"
-                value={values.newPassword || ""}
-                onChange={handleChange}
-                placeholder="Enter your new password"
-                icon={<Lock />}
-              />
-              <InputField
-                label="Confirm Password"
-                id="confirmPassword"
-                type="password"
-                value={values.confirmPassword || ""}
-                onChange={handleChange}
-                placeholder="Confirm your new password"
-                icon={<Lock />}
-              />
-              <div className="text-xs text-gray-600 mt-2">
-                Password must contain:
-                <ul className="list-disc ml-4 mt-1">
-                  <li>At least 8 characters</li>
-                  <li>One uppercase letter</li>
-                  <li>One lowercase letter</li>
-                  <li>One number</li>
-                  <li>One special character (!@#$%^&*)</li>
-                </ul>
-              </div>
-            </>
-          }
-        >
-          <div className="flex justify-center mt-4">
-            <button
-              type="button"
-              className="text-sm text-blue-500 hover:underline"
-              onClick={handleLoginClick}
+          <CardTitle className="text-2xl font-bold text-center text-gray-800">
+            {step === 1 ? 'Forgot Password' : 'Reset Password'}
+          </CardTitle>
+          <CardDescription className="text-center text-gray-600">
+            {step === 1 
+              ? 'Enter your email to receive a reset token' 
+              : 'Enter the reset token and your new password'}
+          </CardDescription>
+        </CardHeader>
+
+        <form onSubmit={step === 1 ? handleRequestReset : handleResetPassword}>
+          <CardContent className="space-y-6">
+            {step === 1 ? (
+              renderInput({
+                id: "email",
+                label: "Email",
+                icon: Mail,
+                type: "email",
+                placeholder: "Enter your email address"
+              })
+            ) : (
+              <>
+                {renderInput({
+                  id: "token",
+                  label: "Reset Token",
+                  placeholder: "Enter the token from your email"
+                })}
+                
+                {renderInput({
+                  id: "newPassword",
+                  label: "New Password",
+                  icon: Lock,
+                  type: "password",
+                  placeholder: "Enter your new password"
+                })}
+                
+                {renderInput({
+                  id: "confirmPassword",
+                  label: "Confirm Password",
+                  icon: Lock,
+                  type: "password",
+                  placeholder: "Confirm your new password"
+                })}
+
+                <Alert className="bg-blue-50 border-blue-200">
+                  <AlertDescription className="text-sm text-blue-700">
+                    Password must contain:
+                    <ul className="list-disc ml-4 mt-1">
+                      <li>At least 8 characters</li>
+                      <li>One uppercase letter</li>
+                      <li>One lowercase letter</li>
+                      <li>One number</li>
+                      <li>One special character (!@#$%^&*)</li>
+                    </ul>
+                  </AlertDescription>
+                </Alert>
+              </>
+            )}
+          </CardContent>
+
+          <CardFooter className="flex flex-col space-y-4">
+            <Button 
+              type="submit" 
+              className="w-full bg-blue-600 hover:bg-blue-700 text-white"
+              disabled={loading }
             >
+              {loading ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  {step === 1 ? 'Sending Token...' : 'Resetting Password...'}
+                </>
+              ) : (
+                step === 1 ? 'Send Reset Token' : 'Reset Password'
+              )}
+            </Button>
+            <Button 
+              type="button" 
+              variant="ghost" 
+              className="w-full text-blue-600 hover:text-blue-700 hover:bg-blue-50" 
+              onClick={() => router.push("/login")}
+            >
+              <ArrowLeft className="w-4 h-4 mr-2" />
               Back to Login
-            </button>
-          </div>
-        </AuthForm>
-      )}
-    </>
+            </Button>
+          </CardFooter>
+        </form>
+      </Card>
+    </div>
   );
 }

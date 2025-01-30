@@ -28,7 +28,6 @@ import SystemStatusCheck from "@/components/StatusCard/SystemStatusCheck";
 import ConnectionStatusCheck from "@/components/StatusCard/ConnectionStatusCheck";
 import TimeStatusCheck from "@/components/StatusCard/TimeStatusCheck";
 import BrowserCompatibilityCheck from "@/components/StatusCard/BrowserCompatibilityCheck";
-import ExamPromoBanner from "@/components/Dashboard/ExamPromoBanner";
 
 function Dashboard() {
   const [userName, setUserName] = useState("User");
@@ -221,8 +220,6 @@ function Dashboard() {
             {/* Time Status Card */}
             <TimeStatusCheck />
           </div>
-          {/* Exam Promo Banner */}
-          <ExamPromoBanner isAdmin={isAdmin} />
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
             {/* Motivational Quotes Section */}
