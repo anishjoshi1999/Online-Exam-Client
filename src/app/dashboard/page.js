@@ -136,14 +136,11 @@ function Dashboard() {
           {/* Online MCQ Exam Section */}
           <div>
             <div className="flex items-center gap-3">
-              {/* Lucide Icon */}
               <ClipboardList className="w-8 h-8 text-blue-600" />
-              {/* Heading */}
               <h1 className="text-3xl font-bold text-gray-900">
                 Online MCQ Exam
               </h1>
             </div>
-            {/* Subheading */}
             <p className="text-gray-600 mt-2">
               Create, manage, and analyze MCQ exams with ease.
             </p>
