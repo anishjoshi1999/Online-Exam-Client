@@ -257,7 +257,7 @@ function ViewPerformance({ params }) {
 
                                   <span
                                     dangerouslySetInnerHTML={{
-                                      __html: processText(`${option}`),
+                                      __html: processText(`${option.optionText}`),
                                     }}
                                   ></span>
                                   {isUserAnswer && (

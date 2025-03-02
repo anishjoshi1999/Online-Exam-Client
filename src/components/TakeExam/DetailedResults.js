@@ -47,7 +47,7 @@ const DetailedResults = ({ results, answers }) => {
                     <span
                       className="ml-3 text-gray-700"
                       dangerouslySetInnerHTML={{
-                        __html: processText(option),
+                        __html: processText(option.optionText),
                       }}
                     ></span>
                   </label>

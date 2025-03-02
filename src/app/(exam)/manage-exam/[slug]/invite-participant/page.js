@@ -42,6 +42,7 @@ function InviteParticipantPage({ params }) {
 
         if (response.ok) {
           const data = await response.json();
+          console.log(data)
           setParticipants(data);
         } else {
           toast.error("Failed to fetch participants.");

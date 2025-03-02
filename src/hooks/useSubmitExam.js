@@ -3,7 +3,17 @@ import { toast } from "react-toastify";
 import renewAccessToken from "@/lib/token/renewAccessToken";
 export const useSubmitExam = (resetExamDetails, resetQuestions) => {
   const handleSubmit = async (examDetails, questions) => {
-    const totalQuestionMarks = questions.reduce(
+    // Convert options format in the frontend before submission
+    const formattedQuestions = questions.map((question) => ({
+      ...question,
+      options: question.options.map((option, index) => ({
+        option: String.fromCharCode(97 + index), // 'a', 'b', 'c', etc.
+        optionText: option,
+      })),
+    }));
+
+    // Validate total question marks
+    const totalQuestionMarks = formattedQuestions.reduce(
       (acc, question) => acc + Number(question.weight),
       0
     );
@@ -25,7 +35,7 @@ export const useSubmitExam = (resetExamDetails, resetQuestions) => {
             "Content-Type": "application/json",
             Authorization: `Bearer ${token}`,
           },
-          body: JSON.stringify({ examDetails, questions }),
+          body: JSON.stringify({ examDetails, questions: formattedQuestions }),
         }
       );
 

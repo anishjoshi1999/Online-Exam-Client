@@ -89,7 +89,7 @@ const ExamSections = ({ questions, answers, onOptionChange }) => {
                   <span
                     className="ml-3 text-gray-700"
                     dangerouslySetInnerHTML={{
-                      __html: processText(option),
+                      __html: processText(option.optionText),
                     }}
                   ></span>
                 </label>

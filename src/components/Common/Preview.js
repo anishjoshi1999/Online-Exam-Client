@@ -165,7 +165,7 @@ function Preview({ examDetails, questions, handleClosePreview }) {
                                 : "text-gray-800"
                             }`}
                             dangerouslySetInnerHTML={{
-                              __html: processText(option),
+                              __html: processText(option.optionText),
                             }}
                           ></span>
                         </div>
