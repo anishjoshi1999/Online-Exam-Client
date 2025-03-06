@@ -14,6 +14,8 @@ import {
   RefreshCw,
   Monitor,
   ClipboardList,
+  Mail,
+  Key,
 } from "lucide-react";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -163,6 +165,14 @@ function Dashboard() {
                   title="Organize & Manage"
                   description="Manage exams and track performances"
                   href="/manage-exam"
+                  className="bg-gradient-to-br from-green-50 to-green-100 hover:from-green-100 hover:to-green-200"
+                  iconClassName="text-green-600"
+                />
+                <ActionCard
+                  icon={Key}
+                  title="Provide Access"
+                  description="Provide Access to students for exams"
+                  href="provide-access"
                   className="bg-gradient-to-br from-green-50 to-green-100 hover:from-green-100 hover:to-green-200"
                   iconClassName="text-green-600"
                 />
