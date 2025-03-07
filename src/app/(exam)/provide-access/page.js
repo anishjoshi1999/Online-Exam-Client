@@ -52,15 +52,12 @@ function ProvideAccess() {
 
       if (!response.ok) {
         const errorData = await response.json().catch(() => ({}));
-        toast.error(errorData.message || `Request failed with status: ${response.status}`);
-        // throw new Error(errorData.message || `Request failed with status: ${response.status}`);
+        console.log(errorData.message || `Request failed with status: ${response.status}`)
       }
 
       return await response.json();
     } catch (error) {
-      toast.error(error.message || `API Error (${endpoint}):`);
-      // console.error(`API Error (${endpoint}):`, error);
-      // throw error;
+      console.log(`API Error (${endpoint}):`, error);
     }
   };
 
@@ -102,7 +99,7 @@ function ProvideAccess() {
       }));
       toast.success(`Repository "${name}" created successfully`);
     } catch (error) {
-      toast.error(error.message || "Failed to create repository");
+      // toast.error(error.message || "Failed to create repository");
     } finally {
       setIsLoading(false);
       setActionType("");
@@ -167,12 +164,11 @@ function ProvideAccess() {
     setActionType("addEmail");
     try {
       const updatedRepo = await apiRequest(`/repository/${selected}/add-email`, "POST", { email });
-      
       updateRepositoryEmails(selected, updatedRepo.emails);
       setUserEmail("");
       toast.success(`Access granted to ${email}`);
     } catch (error) {
-      toast.error(error.message || "Failed to add user");
+      toast.error("Email Already exists");
     } finally {
       setIsLoading(false);
       setActionType("");

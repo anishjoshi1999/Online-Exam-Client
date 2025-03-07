@@ -62,7 +62,7 @@ function ViewParticipationPage({ params }) {
 
   const sortedAndFilteredData = [...participationData]
     .filter((item) =>
-      item.examTakenBy.toLowerCase().includes(searchTerm.toLowerCase())
+      item.examTakenBy.email.toLowerCase().includes(searchTerm.toLowerCase())
     )
     .sort((a, b) => {
       if (!sortField) return 0;
@@ -70,8 +70,8 @@ function ViewParticipationPage({ params }) {
       let compareA, compareB;
 
       if (sortField === "examTakenBy") {
-        compareA = a.examTakenBy.toLowerCase();
-        compareB = b.examTakenBy.toLowerCase();
+        compareA = a.examTakenBy.email.toLowerCase();
+        compareB = b.examTakenBy.email.toLowerCase();
       } else if (sortField === "timeTaken") {
         compareA = a.timeTaken;
         compareB = b.timeTaken;
@@ -105,7 +105,7 @@ function ViewParticipationPage({ params }) {
         .format("h[h] m[m] s[s]");
 
       rows.push([
-        result.examTakenBy,
+        result.examTakenBy.email,
         formattedTime,
         `="${correctAnswers}/${totalQuestions}"`, // Use Excel text formatting
         `${percentage}%`,
@@ -168,7 +168,7 @@ function ViewParticipationPage({ params }) {
                   <div className="relative w-full sm:w-64">
                     <input
                       type="text"
-                      placeholder="Search by username..."
+                      placeholder="Search by email..."
                       className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                       value={searchTerm}
                       onChange={(e) => setSearchTerm(e.target.value)}
@@ -257,7 +257,7 @@ function ViewParticipationPage({ params }) {
                             {index + 1}
                           </td>
                           <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                            {result.examTakenBy}
+                            {result.examTakenBy.email}
                           </td>
                           <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                             {moment
@@ -282,7 +282,7 @@ function ViewParticipationPage({ params }) {
                           </td>
                           <td className="px-6 py-4 whitespace-nowrap">
                             <Link
-                              href={`/manage-exam/${slug}/view-participation/${result.examTakenBy}`}
+                              href={`/manage-exam/${slug}/view-participation/${result.examTakenBy._id}`}
                             >
                               <button className="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors duration-200">
                                 View Result
