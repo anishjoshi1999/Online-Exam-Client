@@ -4,7 +4,7 @@ import refreshToken from "./refreshToken";
 const renewAccessToken = async () => {
   try {
     let token = localStorage.getItem("token");
-    if (!token) throw new Error("No token found, please login again.");
+    if (!token) return;
     if (isAccessTokenExpired(token)) {
       console.log("Token Expired");
       await refreshToken();

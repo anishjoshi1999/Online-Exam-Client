@@ -4,6 +4,7 @@ const inter = Inter({ subsets: ["latin"] });
 import { GoogleAnalytics } from '@next/third-parties/google'
 import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from '@vercel/speed-insights/next';
+import Navbar from "@/components/Navbar/Navbar";
 export const metadata = {
   metadataBase: new URL("https://starttest.online"),
   title: "StartTest.Online - AI-Powered Online Examination Platform",
@@ -42,6 +43,7 @@ export default function RootLayout({ children }) {
     <html lang="en">
       <body className={`${inter.className} flex flex-col min-h-screen`}>
         <main className="flex-grow">
+          <Navbar></Navbar>
           {children}
           <GoogleAnalytics gaId="G-SJKT31XBCL" />
           <Analytics />

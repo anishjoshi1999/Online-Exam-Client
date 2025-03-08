@@ -12,12 +12,17 @@ import {
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import NavLink from "./NavLink";
+import renewAccessToken from "@/lib/token/renewAccessToken";
 
 export default function Navbar() {
   const [token, setToken] = useState(null);
 
   useEffect(() => {
-    setToken(localStorage.getItem("token"));
+    async function fetchToken() {
+      let newToken = await renewAccessToken();
+      setToken(newToken);
+    }
+    fetchToken();
   }, []);
 
   const handleLogout = async () => {
