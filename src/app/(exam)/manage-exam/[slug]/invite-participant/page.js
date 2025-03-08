@@ -225,7 +225,7 @@ function ExamParticipantAccessPage({ params }) {
 
   return (
     <>
-        {/* <Navbar /> */}
+      <Navbar />
       <ToastContainer position="top-right" autoClose={3000} />
       <div className="min-h-screen bg-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
@@ -265,16 +265,22 @@ function ExamParticipantAccessPage({ params }) {
                     Current Exam Access
                   </h3>
                 </div>
-                
+
                 {accessList.length > 0 ? (
                   <div className="bg-gray-50 rounded-lg border border-gray-200 overflow-hidden">
                     <table className="min-w-full divide-y divide-gray-200">
                       <thead className="bg-gray-100">
                         <tr>
-                          <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                          <th
+                            scope="col"
+                            className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                          >
                             Email
                           </th>
-                          <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                          <th
+                            scope="col"
+                            className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                          >
                             Status
                           </th>
                         </tr>
@@ -289,10 +295,14 @@ function ExamParticipantAccessPage({ params }) {
                               </div>
                             </td>
                             <td className="px-6 py-4 whitespace-nowrap text-sm">
-                              <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-                                access.IsInvited ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'
-                              }`}>
-                                {access.IsInvited ? 'Invited' : 'Not Invited'}
+                              <span
+                                className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
+                                  access.IsInvited
+                                    ? "bg-green-100 text-green-800"
+                                    : "bg-gray-100 text-gray-800"
+                                }`}
+                              >
+                                {access.IsInvited ? "Invited" : "Not Invited"}
                               </span>
                             </td>
                           </tr>

@@ -239,7 +239,7 @@ function ProvideAccess() {
 
   return (
     <>
-        {/* <Navbar /> */}
+        <Navbar />
       <ToastContainer
         position="top-right"
         autoClose={3000}
