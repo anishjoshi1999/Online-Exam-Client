@@ -5,7 +5,6 @@ import moment from "moment";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import withAuth from "@/components/Auth/withAuth";
-
 import Breadcrumbs from "@/components/Common/Breadcrumbs";
 import Loader from "@/components/Common/Loader";
 import Navbar from "@/components/Navbar/Navbar";
@@ -113,7 +112,11 @@ function Page({ params }) {
       ],
     }));
   };
-
+  const handleQuestionOptionChange = (questionIndex, optionIndex, value) => {
+    const updatedOptions = [...exam.questions[questionIndex].options];
+    updatedOptions[optionIndex].optionText = value;
+    handleQuestionChange(questionIndex, "options", updatedOptions);
+  };
   const handleDeleteQuestion = (index) => {
     const updatedQuestions = exam.questions.filter((_, i) => i !== index);
     setExam((prev) => ({ ...prev, questions: updatedQuestions }));
@@ -134,7 +137,6 @@ function Page({ params }) {
 
     try {
       let token = await renewAccessToken();
-
       const response = await fetch(
         `${process.env.NEXT_PUBLIC_BACKEND_URL}/mcq/${slug}`,
         {
@@ -187,6 +189,7 @@ function Page({ params }) {
               handlePreview={handlePreview}
               handleClosePreview={handleClosePreview}
               submitButtonText="Update Exam"
+              handleQuestionOptionChange={handleQuestionOptionChange}
             />
           </div>
           <ToastContainer position="top-right" autoClose={5000} />

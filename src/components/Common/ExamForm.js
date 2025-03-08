@@ -36,14 +36,9 @@ const ExamForm = ({
   isPreviewOpen,
   handlePreview,
   handleClosePreview,
+  handleQuestionOptionChange,
   submitButtonText = "Create Exam",
 }) => {
-  const handleQuestionOptionChange = (questionIndex, optionIndex, value) => {
-    const updatedOptions = [...questions[questionIndex].options];
-    updatedOptions[optionIndex] = value;
-    onQuestionChange(questionIndex, "options", updatedOptions);
-  };
-
   const handleAddOption = (questionIndex) => {
     const updatedQuestions = [...questions];
     updatedQuestions[questionIndex].options.push(""); // Add an empty string for the new option
@@ -318,17 +313,9 @@ const ExamForm = ({
                       <WYSIWYGOptionEditor
                         questionIndex={index}
                         index={i}
-                        option={question.options[i]}
+                        option={question.options[i].optionText}
                         handleQuestionOptionChange={handleQuestionOptionChange}
                       />
-                      {/* <input
-                        className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all duration-200"
-                        value={question.options[i]}
-                        onChange={(e) =>
-                          handleQuestionOptionChange(index, i, e.target.value)
-                        }
-                        placeholder={`Option ${String.fromCharCode(65 + i)}`}
-                      /> */}
                       {question.options.length > 2 && (
                         <button
                           type="button"

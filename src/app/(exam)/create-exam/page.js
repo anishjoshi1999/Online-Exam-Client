@@ -29,7 +29,13 @@ const CreateExamPage = () => {
   } = useQuestions(examDetails);
 
   const { handleSubmit } = useSubmitExam(resetExamDetails, resetQuestions);
-
+  
+  const handleQuestionOptionChange = (questionIndex, optionIndex, value) => {
+    const updatedOptions = [...questions[questionIndex].options];
+    updatedOptions[optionIndex] = value;
+    handleQuestionChange(questionIndex, "options", updatedOptions);
+  };
+  
   return (
     <>
       <Navbar />
@@ -49,6 +55,7 @@ const CreateExamPage = () => {
             handlePreview={handlePreview}
             onDeleteQuestion={handleDeleteQuestion}
             handleClosePreview={handleClosePreview}
+            handleQuestionOptionChange={handleQuestionOptionChange}
           />
         </div>
         <ToastContainer position="top-right" autoClose={5000} />
