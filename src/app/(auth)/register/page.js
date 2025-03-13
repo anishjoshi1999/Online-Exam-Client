@@ -39,7 +39,7 @@ export default function Register() {
     lastName: "",
     email: "",
     password: "",
-    userType: "Student",
+    userType: "user",
     receiveUpdates: false,
   });
 
@@ -245,19 +245,19 @@ export default function Register() {
             <div className="space-y-2">
               <Label className="text-gray-700 font-medium">User Type</Label>
               <RadioGroup
-                defaultValue="Student"
+                defaultValue="user"
                 value={values.userType}
                 onValueChange={handleRadioChange}
                 className="flex flex-col space-y-2"
               >
                 <div className="flex items-center space-x-2">
-                  <RadioGroupItem value="Student" id="student" />
+                  <RadioGroupItem value="user" id="student" />
                   <Label htmlFor="student" className="text-gray-700">
                     Student
                   </Label>
                 </div>
                 <div className="flex items-center space-x-2">
-                  <RadioGroupItem value="Teacher" id="teacher" />
+                  <RadioGroupItem value="admin" id="teacher" />
                   <Label htmlFor="teacher" className="text-gray-700">
                     Teacher
                   </Label>
