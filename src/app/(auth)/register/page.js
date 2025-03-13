@@ -40,7 +40,7 @@ export default function Register() {
     email: "",
     password: "",
     userType: "user",
-    receiveUpdates: false,
+    receiveUpdates: true,
   });
 
   const validateField = (name, value) => {
