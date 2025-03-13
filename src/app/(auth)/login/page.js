@@ -1,10 +1,9 @@
-"use client"
-import React, { useState } from 'react';
+"use client";
+import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Mail, Lock, Loader2, Shield, AlertCircle } from "lucide-react";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-
 import {
   Card,
   CardContent,
@@ -16,7 +15,6 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Alert, AlertDescription } from "@/components/ui/alert";
 import { ToastContainer } from "react-toastify";
 
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -32,32 +30,34 @@ export default function Login() {
 
   const validateField = (name, value) => {
     switch (name) {
-      case 'email':
-        return !EMAIL_REGEX.test(value) ? 'Please enter a valid email address' : '';
-      case 'password':
-        return !value ? 'Password is required' : '';
+      case "email":
+        return !EMAIL_REGEX.test(value)
+          ? "Please enter a valid email address"
+          : "";
+      case "password":
+        return !value ? "Password is required" : "";
       default:
-        return '';
+        return "";
     }
   };
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    
-    setValues(prev => ({
+
+    setValues((prev) => ({
       ...prev,
-      [name]: value
+      [name]: value,
     }));
 
-    setErrors(prev => ({
+    setErrors((prev) => ({
       ...prev,
-      [name]: validateField(name, value)
+      [name]: validateField(name, value),
     }));
   };
 
   const validateForm = () => {
     const newErrors = {};
-    Object.keys(values).forEach(key => {
+    Object.keys(values).forEach((key) => {
       const error = validateField(key, values[key]);
       if (error) newErrors[key] = error;
     });
@@ -67,7 +67,7 @@ export default function Login() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
+
     if (!validateForm()) {
       toast.error("Please correct the errors before submitting");
       return;
@@ -96,14 +96,20 @@ export default function Login() {
         toast.error(data.error || "Invalid credentials");
       }
     } catch (error) {
-      console.error('Login error:', error);
+      console.error("Login error:", error);
       toast.error("Connection error. Please try again later.");
     } finally {
       setLoading(false);
     }
   };
 
-  const renderInput = ({ id, label, icon: Icon, type = "text", placeholder }) => (
+  const renderInput = ({
+    id,
+    label,
+    icon: Icon,
+    type = "text",
+    placeholder,
+  }) => (
     <div className="space-y-2">
       <Label htmlFor={id} className="text-gray-700 font-medium">
         {label}
@@ -116,7 +122,7 @@ export default function Login() {
           type={type}
           placeholder={placeholder}
           className={`pl-9 border-gray-200 focus:border-blue-600 focus:ring-blue-600 ${
-            errors[id] ? 'border-red-500' : ''
+            errors[id] ? "border-red-500" : ""
           }`}
           value={values[id]}
           onChange={handleChange}
@@ -157,7 +163,7 @@ export default function Login() {
               label: "Email",
               icon: Mail,
               type: "email",
-              placeholder: "Enter your email"
+              placeholder: "Enter your email",
             })}
 
             {renderInput({
@@ -165,7 +171,7 @@ export default function Login() {
               label: "Password",
               icon: Lock,
               type: "password",
-              placeholder: "Enter your password"
+              placeholder: "Enter your password",
             })}
 
             <div className="flex justify-end">
@@ -181,8 +187,8 @@ export default function Login() {
           </CardContent>
 
           <CardFooter className="flex flex-col space-y-4">
-            <Button 
-              type="submit" 
+            <Button
+              type="submit"
               className="w-full bg-blue-600 hover:bg-blue-700 text-white"
               // disabled={loading || Object.keys(errors).length > 0}
             >
@@ -195,13 +201,13 @@ export default function Login() {
                 "Sign In"
               )}
             </Button>
-            <Button 
-              type="button" 
-              variant="ghost" 
-              className="w-full text-blue-600 hover:text-blue-700 hover:bg-blue-50" 
+            <Button
+              type="button"
+              variant="ghost"
+              className="w-full text-blue-600 hover:text-blue-700 hover:bg-blue-50"
               onClick={() => router.push("/register")}
             >
-              Don't have an account? Register
+              Don&apos;t have an account? Register
             </Button>
           </CardFooter>
         </form>

@@ -48,7 +48,6 @@ const ExamForm = ({
       updatedQuestions[questionIndex].options
     );
   };
-
   const handleRemoveOption = (questionIndex, optionIndex) => {
     const updatedOptions = [...questions[questionIndex].options];
     updatedOptions.splice(optionIndex, 1); // Remove the selected option
@@ -413,6 +412,7 @@ const ExamForm = ({
           examDetails={examDetails}
           questions={questions}
           handleClosePreview={handleClosePreview}
+          submitButtonText={submitButtonText}
         />
       )}
       {/* Time Conversion Popup */}

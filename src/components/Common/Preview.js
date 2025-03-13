@@ -11,8 +11,12 @@ import {
 import moment from "moment";
 import processText from "@/lib/textUtilities/processText";
 
-function Preview({ examDetails, questions, handleClosePreview }) {
-
+function Preview({
+  examDetails,
+  questions,
+  handleClosePreview,
+  submitButtonText,
+}) {
   // Helper function to check if an option is correct
   const isCorrectOption = (index, correctAnswer) => {
     const optionLetter = String.fromCharCode(97 + index); // Convert 0 to 'a', 1 to 'b', etc.
@@ -156,7 +160,7 @@ function Preview({ examDetails, questions, handleClosePreview }) {
                             <CheckCircle className="w-4 h-4 text-green-600" />
                           )}
                           <span>
-                            {String.fromCharCode(97 + optIndex).toUpperCase()}. {" "}
+                            {String.fromCharCode(97 + optIndex).toUpperCase()}.
                           </span>
                           <span
                             className={`text-sm ${
@@ -165,7 +169,10 @@ function Preview({ examDetails, questions, handleClosePreview }) {
                                 : "text-gray-800"
                             }`}
                             dangerouslySetInnerHTML={{
-                              __html: processText(option.optionText),
+                              __html:
+                                submitButtonText === "Update Exam"
+                                  ? processText(option.optionText)
+                                  : processText(option),
                             }}
                           ></span>
                         </div>

@@ -300,6 +300,7 @@ function ManageExamPage() {
           examDetails={selectedExam}
           questions={selectedExam.questions}
           handleClosePreview={handleClosePreview}
+          submitButtonText={"Update Exam"}
         />
       )}
       <ToastContainer />

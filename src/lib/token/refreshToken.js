@@ -1,26 +1,33 @@
-import { toast, ToastContainer } from "react-toastify";
+import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 const refreshToken = async () => {
   try {
-    const res = await fetch(
-      `${process.env.NEXT_PUBLIC_BACKEND_URL}/auth/refresh-token`,
-      {
-        method: "POST",
-        credentials: "include", // Required for httpOnly cookies
+    let token = localStorage.getItem("token");
+    if (token != null) {
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/auth/refresh-token`,
+        {
+          method: "POST",
+          credentials: "include", // Required for httpOnly cookies
+        }
+      );
+
+      if (!res.ok) {
+        toast.error(`Failed to refresh token: ${res.status} ${res.statusText}`);
       }
-    );
 
-    if (!res.ok) {
-      throw new Error("Failed to refresh token");
+      const data = await res.json().catch(() => null);
+      if (data?.accessToken) {
+        localStorage.setItem("token", data.accessToken);
+      } else {
+        toast.error("Invalid token response");
+      }
     }
-
-    const data = await res.json();
-    localStorage.setItem("token", data.accessToken); // Update access token
   } catch (error) {
-    console.log(error);
-    console.log("Error refreshing token:", error);
+    console.error("Error refreshing token:", error.message);
     toast.error("Session expired, please log in again.");
   }
 };
+
 export default refreshToken;

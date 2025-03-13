@@ -2,8 +2,9 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import Loader from "../Common/Loader";
-import refreshToken from "@/lib/token/refreshToken";
-import isAccessTokenExpired from "@/lib/token/isAccessTokenExpired";
+import renewAccessToken from "@/lib/token/renewAccessToken";
+
+// Enhanced shield icon with better styling
 const LogoIcon = () => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
@@ -22,28 +23,37 @@ const LogoIcon = () => (
 );
 
 const AuthMessage = ({ title, message }) => (
-  <div className="min-h-screen bg-gradient-to-br from-blue-50 to-gray-100 flex items-center justify-center p-4">
+  <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white flex items-center justify-center p-4">
     <div className="max-w-md w-full">
       <div className="text-center mb-8">
-        <div className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-blue-600 text-white mb-4">
+        <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-blue-600 text-white mb-6 shadow-lg">
           <LogoIcon />
         </div>
-        <h1 className="text-3xl font-bold text-gray-900">{title}</h1>
-        <p className="text-gray-600 mt-2">{message}</p>
+        <h1 className="text-2xl font-bold text-gray-800">{title}</h1>
+        <p className="text-gray-600 mt-2 max-w-xs mx-auto">{message}</p>
       </div>
 
-      <div className="bg-white rounded-xl shadow-xl p-8">
+      <div className="bg-white rounded-xl shadow-lg p-8 border border-gray-100">
         <Link
           href="/login"
-          className="block w-full py-3 px-4 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all duration-300 text-center"
+          className="block w-full py-3 px-4 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all text-center"
         >
           Go to Login
         </Link>
+        
+        <div className="mt-4 text-center">
+          <Link
+            href="/"
+            className="text-blue-600 hover:text-blue-800 text-sm font-medium transition-colors"
+          >
+            Return to Home
+          </Link>
+        </div>
       </div>
 
       <div className="mt-8 text-center">
         <p className="text-gray-500 text-sm">
-          &copy; 2024 Start Test. All rights reserved.
+          &copy; {new Date().getFullYear()} Start Test. All rights reserved.
         </p>
       </div>
     </div>
@@ -54,57 +64,26 @@ const withAuth = (WrappedComponent) => {
   const AuthenticatedComponent = (props) => {
     const [isAuthenticated, setIsAuthenticated] = useState(null);
     const [loading, setLoading] = useState(true);
-    const [expired, setExpired] = useState(false);
-
+    
     useEffect(() => {
       const checkAuthentication = async () => {
-        let token = localStorage.getItem("token");
+        let token = await renewAccessToken();
 
         if (!token) {
           setIsAuthenticated(false);
           setLoading(false);
           return;
-        }
-
-        // Check if token is expired
-        const isExpired = isAccessTokenExpired(token);
-        if (isExpired) {
-          console.log("Token Expired");
-          try {
-            await refreshToken();
-            token = localStorage.getItem("token");
-          } catch (error) {
-            console.error("Error refreshing token:", error);
-            setIsAuthenticated(false);
-            setLoading(false);
-            return;
-          }
-        }
-
-        if (isAccessTokenExpired(token)) {
-          setExpired(true);
-          setIsAuthenticated(false);
         } else {
+          // Token is valid
           setIsAuthenticated(true);
         }
-
         setLoading(false);
       };
-
       checkAuthentication();
     }, []);
 
     if (loading) {
       return <Loader />;
-    }
-
-    if (expired) {
-      return (
-        <AuthMessage
-          title="Session Expired"
-          message="Your session has expired. Please log in again to continue."
-        />
-      );
     }
 
     if (!isAuthenticated) {
