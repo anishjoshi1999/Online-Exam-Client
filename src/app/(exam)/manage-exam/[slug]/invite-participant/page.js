@@ -3,7 +3,15 @@ import React, { useState, useEffect, use } from "react";
 import Breadcrumbs from "@/components/Common/Breadcrumbs";
 import withAuth from "@/components/Auth/withAuth";
 import Navbar from "@/components/Navbar/Navbar";
-import { Mail, Filter, Shield, Lock, Unlock, UserCheck } from "lucide-react";
+import {
+  Mail,
+  Filter,
+  Shield,
+  Lock,
+  Unlock,
+  UserCheck,
+  Loader,
+} from "lucide-react";
 import renewAccessToken from "@/lib/token/renewAccessToken";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -46,7 +54,6 @@ function ExamParticipantAccessPage({ params }) {
             },
           }
         );
-
         if (response.ok) {
           const data = await response.json();
           setRepositories(data);
@@ -65,7 +72,6 @@ function ExamParticipantAccessPage({ params }) {
         setIsLoading(false);
       }
     };
-
     fetchRepositories();
   }, []);
 
@@ -84,7 +90,6 @@ function ExamParticipantAccessPage({ params }) {
     const repoName = event.target.value;
     setSelectedRepo(repoName);
     setSearchTerm("");
-
     const selectedRepoData = repositories.find(
       (repo) => repo.name === repoName
     );
@@ -92,9 +97,6 @@ function ExamParticipantAccessPage({ params }) {
       const repoEmails = selectedRepoData.emails || [];
       setEmails(repoEmails);
       setFilteredEmails(repoEmails);
-
-      // Initialize access status to false for all emails
-      // (will be overridden by fetchExamAccessStatus when it completes)
       setAccessStatus(
         repoEmails.reduce((acc, email) => {
           acc[email] = false;
@@ -113,11 +115,9 @@ function ExamParticipantAccessPage({ params }) {
       (status) => status === true
     );
     const newAccessStatus = { ...accessStatus };
-
     filteredEmails.forEach((email) => {
       newAccessStatus[email] = !areAllGranted;
     });
-
     setAccessStatus(newAccessStatus);
   };
 
@@ -133,9 +133,7 @@ function ExamParticipantAccessPage({ params }) {
       toast.warning("Please select a repository first");
       return;
     }
-
     setIsSaving(true);
-
     try {
       const token = await renewAccessToken();
       const accessUpdates = Object.entries(accessStatus).map(
@@ -144,7 +142,6 @@ function ExamParticipantAccessPage({ params }) {
           hasAccess,
         })
       );
-
       const response = await fetch(
         `${process.env.NEXT_PUBLIC_BACKEND_URL}/repository/${slug}/provide-access`,
         {
@@ -159,11 +156,9 @@ function ExamParticipantAccessPage({ params }) {
           }),
         }
       );
-
       if (response.ok) {
         const data = await response.json();
         toast.success("Participant access updated successfully");
-        // Refresh access list after saving
         fetchExamAccessStatus();
       } else {
         const errorData = await response.json();
@@ -172,7 +167,6 @@ function ExamParticipantAccessPage({ params }) {
         );
       }
     } catch (error) {
-      console.error("Error updating access:", error);
       toast.error("Network error while updating access settings");
     } finally {
       setIsSaving(false);
@@ -203,7 +197,6 @@ function ExamParticipantAccessPage({ params }) {
           },
         }
       );
-
       if (response.ok) {
         const data = await response.json();
         setAccessList(data.invitedParticipants);
@@ -232,7 +225,6 @@ function ExamParticipantAccessPage({ params }) {
           <div className="mt-16">
             <Breadcrumbs items={breadcrumbItems} />
           </div>
-
           <div className="mt-8">
             <div className="bg-white rounded-xl shadow-lg border border-gray-100 overflow-hidden">
               <div className="bg-gradient-to-r from-indigo-600 to-purple-700 px-6 py-5 flex justify-between items-center">
@@ -244,14 +236,17 @@ function ExamParticipantAccessPage({ params }) {
                     Manage Exam Access Control
                   </h2>
                 </div>
-
                 {filteredEmails.length > 0 && (
                   <button
                     className="flex items-center gap-2 bg-white text-indigo-700 px-4 py-2 rounded-lg text-sm font-medium hover:bg-indigo-50 transition-colors disabled:opacity-70 disabled:cursor-not-allowed"
                     onClick={saveAccessSettings}
                     disabled={isSaving}
                   >
-                    <Lock size={16} />
+                    {isSaving ? (
+                      <Loader className="animate-spin" size={16} />
+                    ) : (
+                      <Lock size={16} />
+                    )}
                     {isSaving ? "Saving..." : "Save Access Settings"}
                   </button>
                 )}
@@ -259,13 +254,19 @@ function ExamParticipantAccessPage({ params }) {
 
               {/* Current Access List Section */}
               <div className="p-6 border-b border-gray-200">
-                <div className="flex items-center gap-2 mb-3">
-                  <UserCheck size={18} className="text-indigo-600" />
-                  <h3 className="text-lg font-medium text-gray-800">
-                    Current Exam Access
-                  </h3>
+                <div className="flex flex-col gap-2 mb-4">
+                  <div className="flex items-center gap-2">
+                    <UserCheck size={18} className="text-indigo-600" />
+                    <h3 className="text-lg font-medium text-gray-800">
+                      Current Exam Access
+                    </h3>
+                  </div>
+                  <p className="text-sm text-gray-500">
+                    After providing access to a user, you can share the exam
+                    code. The code will only work for users who have been
+                    granted access.
+                  </p>
                 </div>
-
                 {accessList.length > 0 ? (
                   <div className="bg-gray-50 rounded-lg border border-gray-200 overflow-hidden">
                     <table className="min-w-full divide-y divide-gray-200">
@@ -352,7 +353,6 @@ function ExamParticipantAccessPage({ params }) {
                           <h3 className="text-lg font-medium text-gray-800">
                             Participant Access Control
                           </h3>
-
                           {filteredEmails.length > 0 && (
                             <div className="flex items-center gap-3">
                               <span className="text-sm text-gray-500">
@@ -378,6 +378,12 @@ function ExamParticipantAccessPage({ params }) {
                             </div>
                           )}
                         </div>
+
+                        {/* Note for the user */}
+                        <p className="text-sm text-gray-500 mb-4">
+                          Note: After providing or revoking access, click on
+                          "Save Access Settings" to apply changes.
+                        </p>
 
                         {emails.length > 0 ? (
                           <>

@@ -9,7 +9,7 @@ export const useExamDetails = () => {
     totalMarks: "",
     passMarks: "",
     timezone: "Asia/Kathmandu", // Set a default timezone,
-    showResult:false
+    showResult: true,
   });
 
   const handleExamDetailsChange = (e) => {
@@ -25,7 +25,7 @@ export const useExamDetails = () => {
       totalMarks: "",
       passMarks: "",
       timezone: "Asia/Kathmandu", // Set a default timezone
-      showResult:false
+      showResult: true,
     });
   };
 

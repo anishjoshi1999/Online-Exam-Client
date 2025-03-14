@@ -103,6 +103,7 @@ function ProvideAccess() {
     } finally {
       setIsLoading(false);
       setActionType("");
+      await fetchRepositories()
     }
   };
 
