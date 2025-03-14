@@ -144,6 +144,7 @@ export default function Register() {
       if (res.ok) {
         toast.success("Registration Successful");
         setTimeout(() => router.push("/login"), 1000);
+        toast.success("An Email has been sent to your email address for verification");
       } else {
         toast.error(data.error || "Registration failed");
       }
