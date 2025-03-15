@@ -308,10 +308,7 @@ function ProvideAccess() {
                 <h1 className="text-2xl font-bold text-gray-800">
                   Access Management
                 </h1>
-                <p className="text-gray-600 mt-1">
-                  Manage repository access for your team members and
-                  collaborators.
-                </p>
+
                 <p className="text-gray-600 mt-2">
                   Note: Student emails are stored in repositories and later used
                   to invite participants for exams.

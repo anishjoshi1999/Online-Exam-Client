@@ -29,7 +29,7 @@ const fetchExamData = async (
       const errorMessage = `Error ${res.status}: ${res.statusText}`;
       if (res.status === 423) {
         toast.error("You have already taken the exam");
-      } else if (res.status == 401) {
+      } else if (res.status == 401 || res.status == 404) {
         toast.error("You don't have access to this exam");
       }
       throw new Error(errorMessage);
