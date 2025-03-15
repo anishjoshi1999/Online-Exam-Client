@@ -46,7 +46,9 @@ export default function Navbar() {
           setToken(null);
           window.location.href = "/";
         } else {
-          console.error("Logout failed:", response.statusText);
+          localStorage.removeItem("token");
+          setToken(null);
+          window.location.href = "/";
         }
       } else {
         localStorage.removeItem("token");

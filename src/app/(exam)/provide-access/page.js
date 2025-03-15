@@ -15,7 +15,7 @@ import {
   Shield,
   Info,
   CheckCircle2,
-  XCircle
+  XCircle,
 } from "lucide-react";
 import renewAccessToken from "@/lib/token/renewAccessToken";
 import { ToastContainer, toast } from "react-toastify";
@@ -34,7 +34,7 @@ function ProvideAccess() {
   const [actionType, setActionType] = useState(""); // For tracking specific loading actions
   const [showConfirmDialog, setShowConfirmDialog] = useState(false);
   const [repoToDelete, setRepoToDelete] = useState(null);
-  
+
   const API_BASE_URL = process.env.NEXT_PUBLIC_BACKEND_URL;
 
   // API request wrapper with error handling
@@ -52,7 +52,9 @@ function ProvideAccess() {
 
       if (!response.ok) {
         const errorData = await response.json().catch(() => ({}));
-        console.log(errorData.message || `Request failed with status: ${response.status}`)
+        console.log(
+          errorData.message || `Request failed with status: ${response.status}`
+        );
       }
 
       return await response.json();
@@ -71,7 +73,7 @@ function ProvideAccess() {
     setActionType("fetch");
     try {
       const data = await apiRequest("/repository", "GET");
-      setRepositoryData(prev => ({ ...prev, list: data }));
+      setRepositoryData((prev) => ({ ...prev, list: data }));
     } catch (error) {
       toast.error("Failed to fetch repositories");
     } finally {
@@ -92,7 +94,7 @@ function ProvideAccess() {
     setActionType("create");
     try {
       const newRepo = await apiRequest("/repository", "POST", { name });
-      setRepositoryData(prev => ({
+      setRepositoryData((prev) => ({
         ...prev,
         list: [...prev.list, newRepo],
         name: "",
@@ -103,7 +105,7 @@ function ProvideAccess() {
     } finally {
       setIsLoading(false);
       setActionType("");
-      await fetchRepositories()
+      await fetchRepositories();
     }
   };
 
@@ -126,9 +128,9 @@ function ProvideAccess() {
     setActionType("delete");
     try {
       await apiRequest("/repository", "DELETE", { name: repoToDelete });
-      setRepositoryData(prev => ({
+      setRepositoryData((prev) => ({
         ...prev,
-        list: prev.list.filter(repo => repo.name !== repoToDelete),
+        list: prev.list.filter((repo) => repo.name !== repoToDelete),
         selected: "",
       }));
       toast.success(`Repository "${repoToDelete}" deleted successfully`);
@@ -164,7 +166,11 @@ function ProvideAccess() {
     setIsLoading(true);
     setActionType("addEmail");
     try {
-      const updatedRepo = await apiRequest(`/repository/${selected}/add-email`, "POST", { email });
+      const updatedRepo = await apiRequest(
+        `/repository/${selected}/add-email`,
+        "POST",
+        { email }
+      );
       updateRepositoryEmails(selected, updatedRepo.emails);
       setUserEmail("");
       toast.success(`Access granted to ${email}`);
@@ -184,11 +190,11 @@ function ProvideAccess() {
     setActionType("removeEmail");
     try {
       const updatedRepo = await apiRequest(
-        `/repository/${selected}/remove-email`, 
-        "DELETE", 
+        `/repository/${selected}/remove-email`,
+        "DELETE",
         { email: emailToRemove }
       );
-      
+
       updateRepositoryEmails(selected, updatedRepo.emails);
       toast.info(`Access revoked for ${emailToRemove}`);
     } catch (error) {
@@ -201,11 +207,11 @@ function ProvideAccess() {
 
   // Helper functions
   const updateRepositoryEmails = (repoName, emails) => {
-    setRepositoryData(prev => ({
+    setRepositoryData((prev) => ({
       ...prev,
-      list: prev.list.map(repo => 
+      list: prev.list.map((repo) =>
         repo.name === repoName ? { ...repo, emails } : repo
-      )
+      ),
     }));
   };
 
@@ -222,12 +228,12 @@ function ProvideAccess() {
   };
 
   // Derived state
-  const selectedRepository = repositoryData.selected 
-    ? repositoryData.list.find(repo => repo.name === repositoryData.selected) 
+  const selectedRepository = repositoryData.selected
+    ? repositoryData.list.find((repo) => repo.name === repositoryData.selected)
     : null;
 
   const filteredEmails = selectedRepository
-    ? selectedRepository.emails.filter(email => 
+    ? selectedRepository.emails.filter((email) =>
         email.toLowerCase().includes(searchTerm.toLowerCase())
       )
     : [];
@@ -240,7 +246,7 @@ function ProvideAccess() {
 
   return (
     <>
-        <Navbar />
+      <Navbar />
       <ToastContainer
         position="top-right"
         autoClose={3000}
@@ -251,7 +257,7 @@ function ProvideAccess() {
         draggable
         theme="light"
       />
-      
+
       {/* Confirm Delete Dialog */}
       {showConfirmDialog && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
@@ -261,7 +267,8 @@ function ProvideAccess() {
               <h3 className="text-lg font-semibold">Confirm Deletion</h3>
             </div>
             <p className="mb-6 text-gray-700">
-              Are you sure you want to delete the repository "{repoToDelete}"? This action cannot be undone.
+              Are you sure you want to delete the repository "{repoToDelete}"?
+              This action cannot be undone.
             </p>
             <div className="flex justify-end space-x-3">
               <button
@@ -302,10 +309,15 @@ function ProvideAccess() {
                   Access Management
                 </h1>
                 <p className="text-gray-600 mt-1">
-                  Manage repository access for your team members and collaborators
+                  Manage repository access for your team members and
+                  collaborators.
+                </p>
+                <p className="text-gray-600 mt-2">
+                  Note: Student emails are stored in repositories and later used
+                  to invite participants for exams.
                 </p>
               </div>
-              <button 
+              <button
                 onClick={fetchRepositories}
                 className="flex items-center space-x-2 text-blue-600 hover:text-blue-800 transition-colors"
                 disabled={isLoading && actionType === "fetch"}
@@ -350,15 +362,24 @@ function ProvideAccess() {
                           type="text"
                           placeholder="Repository name"
                           value={repositoryData.name}
-                          onChange={(e) => setRepositoryData(prev => ({ ...prev, name: e.target.value }))}
-                          onKeyPress={(e) => handleKeyPress(e, handleCreateRepository)}
+                          onChange={(e) =>
+                            setRepositoryData((prev) => ({
+                              ...prev,
+                              name: e.target.value,
+                            }))
+                          }
+                          onKeyPress={(e) =>
+                            handleKeyPress(e, handleCreateRepository)
+                          }
                           className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all"
                           disabled={isLoading}
                         />
                         <button
                           onClick={handleCreateRepository}
                           className={`bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg flex items-center justify-center transition-all ${
-                            isLoading && actionType === "create" ? "opacity-70 cursor-not-allowed" : ""
+                            isLoading && actionType === "create"
+                              ? "opacity-70 cursor-not-allowed"
+                              : ""
                           }`}
                           disabled={isLoading}
                         >
@@ -378,7 +399,7 @@ function ProvideAccess() {
                       >
                         Select Repository
                       </label>
-                      
+
                       {isLoading && actionType === "fetch" ? (
                         <div className="flex justify-center items-center py-8">
                           <Loader2 className="animate-spin h-8 w-8 text-blue-500" />
@@ -386,21 +407,32 @@ function ProvideAccess() {
                       ) : repositoryData.list.length > 0 ? (
                         <div className="bg-gray-50 rounded-lg border border-gray-200">
                           {repositoryData.list.map((repo, index) => (
-                            <div 
+                            <div
                               key={index}
                               className={`flex items-center px-4 py-3 cursor-pointer transition-colors ${
-                                index !== repositoryData.list.length - 1 ? "border-b border-gray-200" : ""
+                                index !== repositoryData.list.length - 1
+                                  ? "border-b border-gray-200"
+                                  : ""
                               } ${
                                 repositoryData.selected === repo.name
                                   ? "bg-blue-50 border-l-4 border-l-blue-500"
                                   : "hover:bg-gray-100"
                               }`}
-                              onClick={() => setRepositoryData(prev => ({ ...prev, selected: repo.name }))}
+                              onClick={() =>
+                                setRepositoryData((prev) => ({
+                                  ...prev,
+                                  selected: repo.name,
+                                }))
+                              }
                             >
                               <div className="flex-1">
-                                <p className="font-medium text-gray-800">{repo.name}</p>
+                                <p className="font-medium text-gray-800">
+                                  {repo.name}
+                                </p>
                                 <p className="text-xs text-gray-500 mt-1">
-                                  {repo.emails?.length || 0} user{repo.emails?.length !== 1 ? "s" : ""} with access
+                                  {repo.emails?.length || 0} user
+                                  {repo.emails?.length !== 1 ? "s" : ""} with
+                                  access
                                 </p>
                               </div>
                               {repositoryData.selected === repo.name && (
@@ -473,7 +505,11 @@ function ProvideAccess() {
                           {selectedRepository && selectedRepository.emails && (
                             <div className="flex items-center text-sm text-gray-500">
                               <Info size={14} className="mr-1" />
-                              {selectedRepository.emails.length} user{selectedRepository.emails.length !== 1 ? "s" : ""} with access
+                              {selectedRepository.emails.length} user
+                              {selectedRepository.emails.length !== 1
+                                ? "s"
+                                : ""}{" "}
+                              with access
                             </div>
                           )}
                         </div>
@@ -484,14 +520,18 @@ function ProvideAccess() {
                             placeholder="user@example.com"
                             value={userEmail}
                             onChange={(e) => setUserEmail(e.target.value)}
-                            onKeyPress={(e) => handleKeyPress(e, handleAddEmail)}
+                            onKeyPress={(e) =>
+                              handleKeyPress(e, handleAddEmail)
+                            }
                             className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all"
                             disabled={isLoading}
                           />
                           <button
                             onClick={handleAddEmail}
                             className={`bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg flex items-center gap-2 transition-all ${
-                              isLoading && actionType === "addEmail" ? "opacity-70 cursor-not-allowed" : ""
+                              isLoading && actionType === "addEmail"
+                                ? "opacity-70 cursor-not-allowed"
+                                : ""
                             }`}
                             disabled={isLoading}
                           >
@@ -525,7 +565,7 @@ function ProvideAccess() {
                               size={16}
                             />
                             {searchTerm && (
-                              <button 
+                              <button
                                 className="absolute right-2 top-2 text-gray-400 hover:text-gray-600"
                                 onClick={() => setSearchTerm("")}
                               >
@@ -554,7 +594,10 @@ function ProvideAccess() {
                               </thead>
                               <tbody className="bg-white divide-y divide-gray-200">
                                 {filteredEmails.map((email, index) => (
-                                  <tr key={index} className="hover:bg-gray-50 transition-colors">
+                                  <tr
+                                    key={index}
+                                    className="hover:bg-gray-50 transition-colors"
+                                  >
                                     <td className="px-6 py-4 text-sm text-gray-700 whitespace-nowrap">
                                       {email}
                                     </td>
@@ -573,15 +616,18 @@ function ProvideAccess() {
                             </table>
                           ) : (
                             <div className="text-center py-8">
-                              <Users className="mx-auto text-gray-400 mb-2" size={24} />
+                              <Users
+                                className="mx-auto text-gray-400 mb-2"
+                                size={24}
+                              />
                               <p className="text-gray-500 text-sm">
-                                {searchTerm 
-                                  ? "No matching email addresses found" 
+                                {searchTerm
+                                  ? "No matching email addresses found"
                                   : "No users have access to this repository yet"}
                               </p>
                               <p className="text-gray-400 text-xs mt-1">
-                                {searchTerm 
-                                  ? "Try a different search term" 
+                                {searchTerm
+                                  ? "Try a different search term"
                                   : "Add users using the form above"}
                               </p>
                             </div>
@@ -604,7 +650,9 @@ function ProvideAccess() {
                       </p>
                       <div className="mt-6">
                         <button
-                          onClick={() => document.getElementById('repoName').focus()}
+                          onClick={() =>
+                            document.getElementById("repoName").focus()
+                          }
                           className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
                         >
                           <FolderPlus className="mr-2" size={16} />
@@ -617,17 +665,23 @@ function ProvideAccess() {
               </div>
             </div>
           </div>
-          
+
           {/* Help Section */}
           <div className="mt-8 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl p-6 border border-blue-100">
             <div className="flex items-start">
-              <Info className="text-blue-500 mt-1 mr-4 flex-shrink-0" size={24} />
+              <Info
+                className="text-blue-500 mt-1 mr-4 flex-shrink-0"
+                size={24}
+              />
               <div>
-                <h3 className="font-medium text-blue-800">Managing Repository Access</h3>
+                <h3 className="font-medium text-blue-800">
+                  Managing Repository Access
+                </h3>
                 <p className="mt-1 text-sm text-blue-700">
-                  Repositories allow you to organize your projects and control who has access to them. 
-                  Share access with team members by adding their email addresses, and they'll receive 
-                  access to view and collaborate on repository content.
+                  Repositories allow you to organize your projects and control
+                  who has access to them. Share access with team members by
+                  adding their email addresses, and they'll receive access to
+                  view and collaborate on repository content.
                 </p>
               </div>
             </div>

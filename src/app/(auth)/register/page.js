@@ -39,7 +39,7 @@ export default function Register() {
     lastName: "",
     email: "",
     password: "",
-    userType: "user",
+    confirmPassword: "",
     receiveUpdates: true,
   });
 
@@ -69,8 +69,12 @@ export default function Register() {
           : value.length < 8
           ? "Password must be at least 8 characters long"
           : "";
-      case "userType":
-        return !value ? "Please select a user type" : "";
+      case "confirmPassword":
+        return !value
+          ? "Please confirm your password"
+          : value !== values.password
+          ? "Passwords do not match"
+          : "";
       default:
         return "";
     }
@@ -89,14 +93,19 @@ export default function Register() {
         ...prev,
         [name]: validateField(name, value),
       }));
-    }
-  };
 
-  const handleRadioChange = (value) => {
-    setValues((prev) => ({
-      ...prev,
-      userType: value,
-    }));
+      // Special case for password/confirmPassword to validate match when either changes
+      if (name === "password") {
+        setErrors((prev) => ({
+          ...prev,
+          confirmPassword: values.confirmPassword
+            ? values.confirmPassword !== value
+              ? "Passwords do not match"
+              : ""
+            : prev.confirmPassword,
+        }));
+      }
+    }
   };
 
   const handleCheckboxChange = (checked) => {
@@ -130,12 +139,15 @@ export default function Register() {
     setLoading(true);
 
     try {
+      // Remove confirmPassword from the data being sent to the server
+      const { confirmPassword, ...submissionData } = values;
+      
       const res = await fetch(
         `${process.env.NEXT_PUBLIC_BACKEND_URL}/auth/register`,
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(values),
+          body: JSON.stringify(submissionData),
         }
       );
 
@@ -143,8 +155,8 @@ export default function Register() {
 
       if (res.ok) {
         toast.success("Registration Successful");
-        setTimeout(() => router.push("/login"), 1000);
         toast.success("An Email has been sent to your email address for verification");
+        setTimeout(() => router.push("/login"), 3000);
       } else {
         toast.error(data.error || "Registration failed");
       }
@@ -243,34 +255,13 @@ export default function Register() {
               placeholder: "Create a strong password",
             })}
 
-            <div className="space-y-2">
-              <Label className="text-gray-700 font-medium">User Type</Label>
-              <RadioGroup
-                defaultValue="user"
-                value={values.userType}
-                onValueChange={handleRadioChange}
-                className="flex flex-col space-y-2"
-              >
-                <div className="flex items-center space-x-2">
-                  <RadioGroupItem value="user" id="student" />
-                  <Label htmlFor="student" className="text-gray-700">
-                    Student
-                  </Label>
-                </div>
-                <div className="flex items-center space-x-2">
-                  <RadioGroupItem value="admin" id="teacher" />
-                  <Label htmlFor="teacher" className="text-gray-700">
-                    Teacher
-                  </Label>
-                </div>
-              </RadioGroup>
-              {errors.userType && (
-                <div className="flex items-center mt-1 text-sm text-red-500">
-                  <AlertCircle className="h-4 w-4 mr-1" />
-                  {errors.userType}
-                </div>
-              )}
-            </div>
+            {renderInput({
+              id: "confirmPassword",
+              label: "Confirm Password",
+              icon: Lock,
+              type: "password",
+              placeholder: "Confirm your password",
+            })}
 
             <div className="flex items-center space-x-2">
               <Checkbox
