@@ -11,10 +11,8 @@ import {
   PlusCircle,
   Lightbulb,
   Target,
-  RefreshCw,
   Monitor,
   ClipboardList,
-  Mail,
   Key,
 } from "lucide-react";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
@@ -30,6 +28,7 @@ import SystemStatusCheck from "@/components/StatusCard/SystemStatusCheck";
 import ConnectionStatusCheck from "@/components/StatusCard/ConnectionStatusCheck";
 import TimeStatusCheck from "@/components/StatusCard/TimeStatusCheck";
 import BrowserCompatibilityCheck from "@/components/StatusCard/BrowserCompatibilityCheck";
+import Link from "next/link";
 
 function Dashboard() {
   const [userName, setUserName] = useState("User");
@@ -133,7 +132,6 @@ function Dashboard() {
             </div>
           </div>
         </div>
-
         <div className="space-y-10">
           {/* Online MCQ Exam Section */}
           <div>
@@ -146,6 +144,12 @@ function Dashboard() {
             <p className="text-gray-600 mt-2">
               Create, manage, and analyze MCQ exams with ease.
             </p>
+            <p className="text-gray-600 mt-2">
+              How to conduct online exams with ease.{" "}
+              <Link href="/how-to-use" className="text-blue-600 underline">
+                Learn More
+              </Link>
+            </p>
           </div>
 
           {/* Actions Grid */}
@@ -154,25 +158,25 @@ function Dashboard() {
               <>
                 <ActionCard
                   icon={PlusCircle}
-                  title="Design Your Exam"
+                  title="1. Design Your Exam"
                   description="Design and set up new exams with ease"
                   href="/create-exam"
                   className="bg-gradient-to-br from-blue-50 to-blue-100 hover:from-blue-100 hover:to-blue-200"
                   iconClassName="text-blue-600"
                 />
                 <ActionCard
-                  icon={BookOpen}
-                  title="Organize & Manage"
-                  description="Manage exams and track performances"
-                  href="/manage-exam"
+                  icon={Key}
+                  title="2. Add Email Repository"
+                  description="Add Student Emails on repository to provide access"
+                  href="provide-access"
                   className="bg-gradient-to-br from-green-50 to-green-100 hover:from-green-100 hover:to-green-200"
                   iconClassName="text-green-600"
                 />
                 <ActionCard
-                  icon={Key}
-                  title="Add Students Emails"
-                  description="Add Student Emails to provide access"
-                  href="provide-access"
+                  icon={BookOpen}
+                  title="3. Organize & Manage"
+                  description="Manage exams and track performances"
+                  href="/manage-exam"
                   className="bg-gradient-to-br from-green-50 to-green-100 hover:from-green-100 hover:to-green-200"
                   iconClassName="text-green-600"
                 />
@@ -180,7 +184,7 @@ function Dashboard() {
             )}
             <ActionCard
               icon={PenTool}
-              title="Start Test"
+              title="4. Start Test"
               description="Begin your scheduled exam session"
               href="/take-exam"
               className="bg-gradient-to-br from-purple-50 to-purple-100 hover:from-purple-100 hover:to-purple-200"
@@ -188,7 +192,7 @@ function Dashboard() {
             />
             <ActionCard
               icon={BarChart3}
-              title="Analyze Results"
+              title="5. Analyze Results"
               description="Analyze exam results for improvement"
               href="/view-performance"
               className="bg-gradient-to-br from-orange-50 to-orange-100 hover:from-orange-100 hover:to-orange-200"

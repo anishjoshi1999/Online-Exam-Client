@@ -85,3 +85,56 @@ export const detailedSteps = [
     ariaLabel: "Analytics step",
   },
 ];
+
+
+export const HowToUseSteps = [
+  {
+    number: "1",
+    title: "Sign Up or Log In",
+    description:
+      "Create an account or log in securely to access the exam platform.",
+  },
+  {
+    number: "2",
+    title: "Create an Exam in '1. Design Your Exam'",
+    description:
+      "Set up exam details, including start and end dates, total marks, and support for images and LaTeX for complex equations.",
+  },
+  {
+    number: "3",
+    title: "Prepare Participant List in '2. Add Email Repository'",
+    description:
+      "Organize and manage participants by creating a repository of email addresses for easy invitations.",
+  },
+  {
+    number: "4",
+    title: "Manage Access in '3. Organize & Manage'",
+    description:
+      "Control participant access through this page using the action button in each exam field, allowing you to add or remove users as needed.",
+  },
+  {
+    number: "5",
+    title: "Get Exam Code from '3. Organize & Manage'",
+    description:
+      "Share an exam code to grant authorized participants access to the test.",
+  },
+  {
+    number: "6",
+    title: "Conduct the Exam in '4. Start Test'",
+    description:
+      "Participants take the exam within the allotted time, with options for manual or automatic submission using the exam code.",
+  },
+  {
+    number: "7",
+    title: "Instant Results",
+    description:
+      "Automated scoring provides immediate feedback, including performance insights and correct answers.",
+  },
+  {
+    number: "8",
+    title: "Advanced Exam Analytics",
+    description:
+      "Access detailed reports on participant performance, responses, and exam integrity.",
+  },
+];
+
